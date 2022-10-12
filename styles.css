@@ -1,0 +1,21 @@
+body {
+  margin: 0 auto;
+  display: ;
+  flex-direction: column;
+}
+
+#gallery {
+  display: flex;
+  flex-wrap: wrap;
+  /* grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  grid-column-gap: 10px;
+  grid-row-gap: 10px; */
+}
+
+#gallery img {
+  min-width: 300px;
+  max-width: 500px;
+  object-fit: contain;
+  margin: 5px auto;
+}

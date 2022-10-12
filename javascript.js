@@ -10,12 +10,14 @@
 // Owner: 156018067@N06
 // Photo ID: 52421787156
 
-// <?xml version="1.0" encoding="utf-8" ?>
-// <rsp stat="ok">
-//   <photos page="1" pages="1576" perpage="100" total="157578">
-//     <photo id="52421787156" owner="156018067@N06" secret="3948902d0e" server="65535" farm="66" title="Brandon" ispublic="1" isfriend="0" isfamily="0" />
-//    </photos>
-// </rsp>
+// # Example
+// #   server-id: 7372
+// #   photo-id: 12502775644
+// #   secret: acfd415fa7
+// #   size: w
+// #
+
+// https://live.staticflickr.com/7372/12502775644_acfd415fa7_w.jpg
 
 const api_key = "e094e7d812d749a0545718fa9e86b735";
 const baseURL =
@@ -23,28 +25,55 @@ const baseURL =
 const amp = "&";
 const tagURL = "tags=";
 const apiURL = `api_key=${api_key}`;
-const JSON = "&format=json";
+const JSON = "&format=json&nojsoncallback=1&per_page=500%safe_search=1";
 const searchBox = document.getElementById("searchBox");
+const flickrImg = document.getElementById("flickrImg");
 
 let searchTerm = searchBox.value;
 let fullURL;
+let gallery = document.getElementById("gallery");
 
 searchBtn = document.querySelector(".searchBtn");
 
 searchBtn.addEventListener("click", createURL);
 
+searchBtn.addEventListener("keydown", function (event) {
+  if (event.keyCode === 13) {
+    document.getElementById("searchBtn").click();
+  }
+});
+
 function createURL() {
   //   console.log(api_key, baseURL, apiURL, searchTerm);
   searchTerm = searchBox.value;
   console.log(searchTerm);
-  fullURL = baseURL + amp + apiURL + JSON + amp + tagURL + searchTerm;
   console.log(fullURL);
-
-  fetch(fullURL)
-    .then((response) => response)
-    .then((out) => {
-      console.log("Checkout this JSON! ", out);
-    });
+  gallery.innerHTML = "";
+  for (let i = 0; i < 25; i++) {
+    let page = `page=${Math.floor(Math.random() * 100)}`;
+    fullURL =
+      baseURL + amp + apiURL + JSON + amp + tagURL + searchTerm + amp + page;
+    fetch(fullURL)
+      .then((response) => response.json())
+      .then((data) => {
+        let object =
+          data.photos.photo[
+            Math.floor(Math.random() * data.photos.photo.length)
+          ];
+        console.log(data.photos);
+        let serverID = object.server;
+        let photoID = object.id;
+        let secret = object.secret;
+        let imgUrl = `https://live.staticflickr.com/${serverID}/${photoID}_${secret}.jpg`;
+        console.log(imgUrl);
+        let newImg = document.createElement("img");
+        newImg.src = imgUrl;
+        gallery.appendChild(newImg);
+        // flickrImg.src = imgUrl;
+        // #   secret: acfd415fa7
+        // #   size: w
+      });
+  }
 }
 
 createURL();
