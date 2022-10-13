@@ -1,3 +1,16 @@
+// #TO DO: Clean up code and annotate
+
+// #TO DO: Update styling for single column on mobile and various grid sizes on larger screens
+
+// #TO DO: Create Dropdown input to select specific film stocks
+// -Dropdowns:
+//   --Film Stock
+//   --ISO
+//   --Camera
+//   --Lens
+// -Text Input:
+//   --tags
+
 // API Explorer: https://www.flickr.com/services/api/explore/flickr.photos.search
 
 // Example Request: https://www.flickr.com/services/rest/?method=flickr.test.echo&name=value
