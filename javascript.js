@@ -37,12 +37,15 @@ const baseURL =
   "https://www.flickr.com/services/rest/?method=flickr.photos.search";
 const amp = "&";
 const tagURL = "tags=";
-const apiURL = `api_key=${api_key}`;
-const JSON = "&format=json&nojsoncallback=1&per_page=500%safe_search=1";
+const apiURL = ``;
+const JSON =
+  "&format=json&nojsoncallback=1&per_page=500&safe_search=1&sort=interestingness-desc&tag_mode=all";
 const searchBox = document.getElementById("searchBox");
+const filmStock = document.getElementById("filmStock");
+const camera = document.getElementById("camera");
+const focalLength = document.getElementById("focalLength");
 const flickrImg = document.getElementById("flickrImg");
 
-let searchTerm = searchBox.value;
 let fullURL;
 let gallery = document.getElementById("gallery");
 
@@ -58,14 +61,19 @@ searchBtn.addEventListener("keydown", function (event) {
 
 function createURL() {
   //   console.log(api_key, baseURL, apiURL, searchTerm);
-  searchTerm = searchBox.value;
-  console.log(searchTerm);
+  searchTerm = searchBox.value.trim();
+  cameraTerm = camera.value.trim();
+  filmStockTerm = filmStock.value.trim();
+  focalLengthTerm = focalLength.value.trim();
+  // console.log(searchTerm);
   console.log(fullURL);
   gallery.innerHTML = "";
   for (let i = 0; i < 25; i++) {
-    let page = `page=${Math.floor(Math.random() * 100)}`;
-    fullURL =
-      baseURL + amp + apiURL + JSON + amp + tagURL + searchTerm + amp + page;
+    let page = `page=${Math.floor(Math.random() * 5) + 1}`;
+    // fullURL =
+    //   baseURL + amp + apiURL + JSON + amp + tagURL + searchTerm + amp + page;
+    fullURL = `${baseURL}&api_key=${api_key}${JSON}&${tagURL}${searchTerm},${filmStockTerm},${cameraTerm},${focalLengthTerm}&${page}`;
+    console.log(fullURL);
     fetch(fullURL)
       .then((response) => response.json())
       .then((data) => {
@@ -73,12 +81,12 @@ function createURL() {
           data.photos.photo[
             Math.floor(Math.random() * data.photos.photo.length)
           ];
-        console.log(data.photos);
+        // console.log(data.photos);
         let serverID = object.server;
         let photoID = object.id;
         let secret = object.secret;
         let imgUrl = `https://live.staticflickr.com/${serverID}/${photoID}_${secret}.jpg`;
-        console.log(imgUrl);
+        // console.log(imgUrl);
         let newImg = document.createElement("img");
         newImg.src = imgUrl;
         gallery.appendChild(newImg);

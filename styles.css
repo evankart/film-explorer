@@ -1,3 +1,8 @@
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* make scrollbar transparent */
+}
+
 body {
   margin: 0 auto;
   flex-direction: column;
@@ -8,10 +13,10 @@ body {
   width: 100%;
   max-width: 500px;
   margin: 7px auto 5px auto;
+  padding: 10px;
   align-items: center;
   justify-content: center;
   justify-items: center;
-  align-content: ;
 }
 
 #searchBox {
