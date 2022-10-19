@@ -9,27 +9,25 @@
   </head>
   <body>
     <div id="search">
-      <input type="text" id="searchBox" value="Portra 400" />
-
-      <label for="filmStock">Choose a film stock:</label>
+      <label for="filmStock">Select Film Stock:</label>
       <select name="filmStock" id="filmStock">
         <option value=""></option>
         <option value="Portra">Portra</option>
-        <option value="Kodak Gold">Kodak Gold</option>
-        <option value="Ilford Delta">Ilford Delta</option>
-        <option value="Fuji Superia">Fuji Superia</option>
+        <option value="KodakGold">Kodak Gold</option>
+        <option value="IlfordDelta">Ilford Delta</option>
+        <option value="FujiSuperia">Fuji Superia</option>
       </select>
 
-      <label for="camera">Choose a camera:</label>
+      <label for="camera">Select Camera:</label>
       <select name="camera" id="camera">
         <option value=""></option>
         <option value="canonA1">Canon A-1</option>
-        <option value="Olympus Stylus">Olympus Stylus</option>
-        <option value="Mamiya RZ67">Mamiya RZ67</option>
+        <option value="OlympusStylus">Olympus Stylus</option>
+        <option value="MamiyaRZ67">Mamiya RZ67</option>
         <option value="Polaroid">Polaroid</option>
       </select>
 
-      <label for="focalLength">Choose a focal length:</label>
+      <label for="focalLength">Select Focal Length:</label>
       <select name="focalLength" id="focalLength">
         <option value=""></option>
         <option value="16mm">16mm</option>
@@ -39,6 +37,9 @@
         <option value="70mm">70mm</option>
         <option value="150mm">150mm</option>
       </select>
+
+      <label for="searchBox">Manual Search:</label>
+      <input type="text" id="searchBox" value="Portra 400" />
 
       <button class="searchBtn">Search</button>
     </div>
