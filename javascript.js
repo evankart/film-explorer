@@ -3,14 +3,16 @@
 
 // #TO DO: Update styling for single column on mobile and various grid sizes on larger screens
 
-// #TO DO: Create Dropdown input to select specific film stocks
-// -Dropdowns:
-//   --Film Stock
-//   --ISO
-//   --Camera
-//   --Lens
-// -Text Input:
-//   --tags
+/*
+ * #TO DO: Create Dropdown input to select specific film stocks
+ * -Dropdowns:
+ *   --Film Stock
+ *   --ISO
+ *   --Camera
+ *   --Lens
+ * -Text Input:
+ *   --tags
+ */
 
 // API Explorer: https://www.flickr.com/services/api/explore/flickr.photos.search
 
@@ -20,18 +22,56 @@
 
 // https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=e094e7d812d749a0545718fa9e86b735&tags=portra400
 
-// Example image URL: https://flickr.com/photos/156018067@N06/52421787156
-// Owner: 156018067@N06
-// Photo ID: 52421787156
+/*
+ * Example image URL: https://flickr.com/photos/156018067@N06/52421787156
+ * Owner: 156018067@N06
+ * Photo ID: 52421787156
+ */
 
-// # Example
-// #   server-id: 7372
-// #   photo-id: 12502775644
-// #   secret: acfd415fa7
-// #   size: w
-// #
+/*
+ * # Example
+ * #   server-id: 7372
+ * #   photo-id: 12502775644
+ * #   secret: acfd415fa7
+ * #   size: w
+ * #
+ */
 
 // https://live.staticflickr.com/7372/12502775644_acfd415fa7_w.jpg
+
+/**
+ * Get a list of images from search
+ * Pick images at random to include in gallery (check for duplicates)
+ * For each image selected:
+ *    - Create a new object with the Image class
+ *    - Get URL for static image
+ *    - Get URL for full flickr site
+ *    - Get image title and creator
+ *    - ADD TO GALLERY ARRAY
+ * Loop through each object in array
+ *    - Place image in gallery
+ *    - hyperlink image to flickr address
+ *    - display the title and/or creator under the image
+ *    - display the relevant tags 
+ */
+
+class Image {
+  constructor(imgURL, flickrURL, title, tags) {
+    this.imgURL = imgURL;
+    this.flickrURL = flickrURL;
+    this.title = title;
+    this.tags = tags;
+  }
+}
+
+const img1 = new Image(
+  "https://live.staticflickr.com/7372/12502775644_acfd415fa7_w.jpg",
+  "https://flickr.com/",
+  "Sample Image",
+  "Sample Tags"
+);
+
+console.log("img1", img1);
 
 const api_key = "e094e7d812d749a0545718fa9e86b735";
 const baseURL =
@@ -65,14 +105,18 @@ function createURL() {
   let searchTerm = searchBox.value.trim();
   let cameraTerm = camera.value.trim();
   let filmStockTerm = filmStock.value.trim();
-  // focalLengthTerm = focalLength.value.trim();
-  // console.log(searchTerm);
+  /*
+   * focalLengthTerm = focalLength.value.trim();
+   * console.log(searchTerm);
+   */
   console.log(fullURL);
   gallery.innerHTML = "";
   for (let i = 0; i < 25; i++) {
     let page = `page=${Math.floor(Math.random() * 3) + 1}`;
-    // fullURL =
-    //   baseURL + amp + apiURL + JSON + amp + tagURL + searchTerm + amp + page;
+    /*
+     * fullURL =
+     *   baseURL + amp + apiURL + JSON + amp + tagURL + searchTerm + amp + page;
+     */
     fullURL = `${baseURL}&api_key=${api_key}${JSON}&${tagURL}${searchTerm},${filmStockTerm},${cameraTerm},&${page}`;
     console.log(fullURL);
     fetch(fullURL)
@@ -91,9 +135,11 @@ function createURL() {
         let newImg = document.createElement("img");
         newImg.src = imgUrl;
         gallery.appendChild(newImg);
-        // flickrImg.src = imgUrl;
-        // #   secret: acfd415fa7
-        // #   size: w
+        /*
+         * flickrImg.src = imgUrl;
+         * #   secret: acfd415fa7
+         * #   size: w
+         */
       });
   }
 }
