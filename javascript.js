@@ -69,7 +69,7 @@ function createURL() {
   console.log(fullURL);
   gallery.innerHTML = "";
   for (let i = 0; i < 25; i++) {
-    let page = `page=${Math.floor(Math.random() * 5) + 1}`;
+    let page = `page=${Math.floor(Math.random() * 3) + 1}`;
     // fullURL =
     //   baseURL + amp + apiURL + JSON + amp + tagURL + searchTerm + amp + page;
     fullURL = `${baseURL}&api_key=${api_key}${JSON}&${tagURL}${searchTerm},${filmStockTerm},${cameraTerm},${focalLengthTerm}&${page}`;
