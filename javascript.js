@@ -1,3 +1,4 @@
+"use strict";
 // #TO DO: Clean up code and annotate
 
 // #TO DO: Update styling for single column on mobile and various grid sizes on larger screens
@@ -49,7 +50,7 @@ const flickrImg = document.getElementById("flickrImg");
 let fullURL;
 let gallery = document.getElementById("gallery");
 
-searchBtn = document.querySelector(".searchBtn");
+const searchBtn = document.querySelector(".searchBtn");
 
 searchBtn.addEventListener("click", createURL);
 
@@ -61,9 +62,9 @@ searchBtn.addEventListener("keydown", function (event) {
 
 function createURL() {
   //   console.log(api_key, baseURL, apiURL, searchTerm);
-  searchTerm = searchBox.value.trim();
-  cameraTerm = camera.value.trim();
-  filmStockTerm = filmStock.value.trim();
+  let searchTerm = searchBox.value.trim();
+  let cameraTerm = camera.value.trim();
+  let filmStockTerm = filmStock.value.trim();
   // focalLengthTerm = focalLength.value.trim();
   // console.log(searchTerm);
   console.log(fullURL);
