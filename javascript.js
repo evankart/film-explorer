@@ -64,7 +64,7 @@ function createURL() {
   searchTerm = searchBox.value.trim();
   cameraTerm = camera.value.trim();
   filmStockTerm = filmStock.value.trim();
-  focalLengthTerm = focalLength.value.trim();
+  // focalLengthTerm = focalLength.value.trim();
   // console.log(searchTerm);
   console.log(fullURL);
   gallery.innerHTML = "";
@@ -72,7 +72,7 @@ function createURL() {
     let page = `page=${Math.floor(Math.random() * 3) + 1}`;
     // fullURL =
     //   baseURL + amp + apiURL + JSON + amp + tagURL + searchTerm + amp + page;
-    fullURL = `${baseURL}&api_key=${api_key}${JSON}&${tagURL}${searchTerm},${filmStockTerm},${cameraTerm},${focalLengthTerm}&${page}`;
+    fullURL = `${baseURL}&api_key=${api_key}${JSON}&${tagURL}${searchTerm},${filmStockTerm},${cameraTerm},&${page}`;
     console.log(fullURL);
     fetch(fullURL)
       .then((response) => response.json())
