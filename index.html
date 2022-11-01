@@ -5,6 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FlickrAPI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -12,15 +18,18 @@
       <label for="filmStock">Select Film Stock:</label>
       <select name="filmStock" id="filmStock">
         <!-- <option value=""></option> -->
-        <optgroup label="Color Film"></optgroup>
+        <option value="Portra400" disabled selected hidden>
+          e.g. Portra 400
+        </option>
         <option value="">N/A</option>
-        <option value="Portra400" selected>Portra 400</option>
+        <optgroup label="Color Film"></optgroup>
+        <option value="Portra400">Portra 400</option>
         <option value="KodakGold">Kodak Gold</option>
         <option value="ColorPlus">Color Plus</option>
         <option value="Ektar">Ektar</option>
         <option value="Cinestill800T">Cinestill 800T</option>
         <option value="FujiSuperia">Fuji Superia</option>
-        <optgroup label="Black and White"></optgroup>
+        <optgroup label="Black and White Film"></optgroup>
         <option value="IlfordHP5">Ilford HP5</option>
         <option value="IlfordDelta">Ilford Delta</option>
         <option value="IlfordXP2">Ilford XP2</option>
@@ -30,15 +39,19 @@
         <option value="Fomapan100">Fomapan 100</option>
       </select>
 
+      <br />
+
       <label for="camera">Select Camera:</label>
       <select name="camera" id="camera">
-        <option value="">N/A</option>
+        <option value="CanonA1" disabled selected hidden>e.g. Canon A-1</option>
         <option value="canonA1">Canon A-1</option>
         <option value="OlympusStylus">Olympus Stylus</option>
         <option value="MamiyaRZ67">Mamiya RZ67</option>
         <option value="Polaroid">Polaroid</option>
         <option value="Holga120">Holga</option>
       </select>
+
+      <br />
 
       <!-- <label for="focalLength">Select Focal Length:</label>
       <select name="focalLength" id="focalLength">
@@ -51,12 +64,14 @@
         <option value="150mm">150mm</option>
       </select> -->
 
-      <label for="searchBox">Manual Search:</label>
+      <label for="searchBox">Keywords:</label>
       <input
         type="text"
         id="searchBox"
         placeholder="e.g. 'cats' or  'polaroid'"
       />
+
+      <br />
 
       <button class="searchBtn">Search</button>
     </div>

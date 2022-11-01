@@ -52,7 +52,7 @@
  *    - Place image in gallery
  *    - hyperlink image to flickr address
  *    - display the title and/or creator under the image
- *    - display the relevant tags 
+ *    - display the relevant tags
  */
 
 class Image {

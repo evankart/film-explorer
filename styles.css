@@ -3,35 +3,63 @@
   background: transparent; /* make scrollbar transparent */
 }
 
+* {
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+}
+
 body {
   margin: 0 auto;
   flex-direction: column;
-  background-color: rgb(255, 214, 190);
+  background-color: #fffefc;
+  width: 100vw;
+  line-height: 1.75em;
+  /* overflow-x: hidden; */
 }
 
 #search {
-  width: 100%;
-  max-width: 500px;
-  margin: 7px auto 5px auto;
-  padding: 10px;
+  width: 90%;
+  max-width: 300px;
+  padding: 0 3%;
+  /* max-width: 500px; */
+  margin: 5px auto;
   align-items: center;
   justify-content: center;
   justify-items: center;
+  line-height: 1.5em;
 }
 
-#searchBox {
-  width: calc(100%-100px);
-  margin-left: 10px;
+select,
+input {
+  border-radius: 10px;
+  border: 1px solid rgb(0, 0, 0);
+  height: 25px;
+  font-size: 1em;
+  width: 100%;
+  margin-bottom: 10px;
 }
 
-.searchBtn {
-  width: 75px;
-  background-color: rgb(230, 230, 230);
+input#searchBox {
+  width: 100%;
+  box-sizing: border-box;
+  padding-left: 4px;
+  display: inline-block;
 }
 
-#searchBox,
-.searchBtn {
-  border-radius: 6px;
+button {
+  width: 100px;
+  line-height: 1.5em;
+  background-color: #fffefc;
+  border-radius: 10px;
+  border: 1px solid rgb(0, 0, 0);
+  background-color: white;
+  color: black;
+  cursor: pointer;
+  position: relative;
+  margin: 0;
+  left: 50%;
+  top: 20px;
+  transform: translate(-50%, -50%);
 }
 
 #gallery {
@@ -48,9 +76,14 @@ body {
   /* min-width: 300px; */
   /* max-width: 500px;
   max-height: 500px; */
-  width: 98%;
+  width: 95%;
   object-fit: contain;
-  margin: 2px auto;
+  margin: 5px auto;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 5px 10px 0px;
+  background-color: #fffefc;
+  padding: 2.5%;
+  box-sizing: border-box;
+  border-radius: 2px;
 }
 
 @media only screen and (min-width: 600px) {
