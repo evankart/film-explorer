@@ -74,13 +74,14 @@ const img1 = new Image(
 console.log("img1", img1);
 
 const api_key = "e094e7d812d749a0545718fa9e86b735";
-const baseURL =
-  "https://www.flickr.com/services/rest/?method=flickr.photos.search";
+const baseURL = "https://www.flickr.com/services/rest/?method=";
+const methodPhotoSearch = "flickr.photos.search";
+const methodGetInfo = "flickr.photos.getinfo";
 const amp = "&";
 const tagURL = "tags=";
 const apiURL = ``;
 const JSON =
-  "&format=json&nojsoncallback=1&per_page=500&safe_search=1&sort=interestingness-desc&tag_mode=all";
+  "&format=json&nojsoncallback=1&per_page=500&safe_search=1&sort=interestingness-desc&tag_mode=all&";
 const searchBox = document.getElementById("searchBox");
 const filmStock = document.getElementById("filmStock");
 const camera = document.getElementById("camera");
@@ -111,13 +112,13 @@ function createURL() {
    */
   console.log(fullURL);
   gallery.innerHTML = "";
-  for (let i = 0; i < 25; i++) {
+  for (let i = 0; i < 15; i++) {
     let page = `page=${Math.floor(Math.random() * 3) + 1}`;
     /*
      * fullURL =
      *   baseURL + amp + apiURL + JSON + amp + tagURL + searchTerm + amp + page;
      */
-    fullURL = `${baseURL}&api_key=${api_key}${JSON}&${tagURL}${searchTerm},${filmStockTerm},${cameraTerm},&${page}`;
+    fullURL = `${baseURL}${methodPhotoSearch}&api_key=${api_key}${JSON}&${tagURL}${searchTerm},${filmStockTerm},${cameraTerm},&${page}`;
     console.log(fullURL);
     fetch(fullURL)
       .then((response) => response.json())
@@ -132,14 +133,28 @@ function createURL() {
         let secret = object.secret;
         let imgUrl = `https://live.staticflickr.com/${serverID}/${photoID}_${secret}.jpg`;
         // console.log(imgUrl);
+        let newFig = document.createElement("figure");
+        let newCaption = document.createElement("figcaption");
+        let newLink = document.createElement("a");
+
+        newLink.textContent = "Full Image";
         let newImg = document.createElement("img");
+        newFig.appendChild(newImg);
+        newFig.appendChild(newCaption);
+        newCaption.appendChild(newLink);
         newImg.src = imgUrl;
-        gallery.appendChild(newImg);
-        /*
-         * flickrImg.src = imgUrl;
-         * #   secret: acfd415fa7
-         * #   size: w
-         */
+        gallery.appendChild(newFig);
+        let infoURL = `${baseURL}${methodGetInfo}&api_key=${api_key}${JSON}&photo_id=${photoID}`;
+        fetch(infoURL)
+          .then((response) => response.json())
+          .then((data) => {
+            let fullLink = data.photo.urls.url[0]._content;
+            let authorName = data.photo.owner.realname;
+            console.log(fullLink);
+            newLink.href = fullLink;
+            newLink.target = "_blank";
+            newLink.textContent = `${authorName}`;
+          });
       });
   }
 }
