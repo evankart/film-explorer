@@ -81,6 +81,7 @@ button {
   /* max-width: 500px;
   max-height: 500px; */
   width: 95vw;
+  max-width: 500px;
   object-fit: contain;
   margin: 5px auto;
   box-shadow: rgba(84, 84, 91, 0.2) 0px 5px 10px 0px;
@@ -114,8 +115,8 @@ figcaption a:hover {
   text-shadow: 1px 1px 3px;
 }
 
-@media only screen and (min-width: 600px) {
-  #search {
+@media only screen and (min-width: 900px) {
+  /* #search {
     display: flex;
     flex-direction: row;
     max-width: 1200px;
@@ -130,7 +131,7 @@ figcaption a:hover {
   label {
     width: auto;
     min-width: 10em;
-  }
+  } */
 
   #gallery img {
     height: 100%;
@@ -144,12 +145,47 @@ figcaption a:hover {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  button {
+  /* button {
     width: 500px;
     position: relative;
     left: 0;
     top: 15px;
     transform: none);
+  } */
+}
+
+@media only screen and (min-width: 1200px) {
+  #search {
+    display: flex;
+    flex-direction: row;
+    max-width: 1200px;
+    margin-top: 20px;
+    margin: 20px 20;
+  }
+
+  select,
+  input {
+    width: 150px;
+    margin-right: 50px;
+    margin-bottom: 0;
+  }
+
+  select {
+    margin-right: 0;
+  }
+
+  label {
+    width: 100px;
+    min-width: 10em;
+    text-align: end;
+    margin-right: 8px;
+  }
+
+  button {
+    width: 600px;
+    position: relative;
+    left: 0;
+    padding: 0;
   }
 }
 
