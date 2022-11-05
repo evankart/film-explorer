@@ -138,6 +138,7 @@ figcaption a:hover {
     max-height: 350px;
     width: 95%;
     margin-top: 15px;
+    padding: 20px;
   }
 
   #gallery {
@@ -186,6 +187,10 @@ figcaption a:hover {
     position: relative;
     left: 0;
     padding: 0;
+  }
+
+  #gallery img {
+    padding: 30px;
   }
 }
 
