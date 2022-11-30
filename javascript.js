@@ -137,12 +137,12 @@ searchBtn.addEventListener("keydown", function (event) {
 //         // console.log(imgUrl);
 //         let newFig = document.createElement("figure");
 //         let newCaption = document.createElement("figcaption");
-//         let newLink = document.createElement("a");
+//         let authorLink = document.createElement("a");
 
 //         let newImg = document.createElement("img");
 //         newFig.appendChild(newImg);
 //         newFig.appendChild(newCaption);
-//         newCaption.appendChild(newLink);
+//         newCaption.appendChild(authorLink);
 //         newImg.src = imgUrl;
 //         gallery.appendChild(newFig);
 //         let infoURL = `${baseURL}${methodGetInfo}&api_key=${api_key}${JSON}&photo_id=${photoID}`;
@@ -153,12 +153,12 @@ searchBtn.addEventListener("keydown", function (event) {
 //             let authorName = data.photo.owner.realname;
 //             let username = data.photo.owner.username;
 //             console.log(fullLink);
-//             newLink.href = fullLink;
-//             newLink.target = "_blank";
+//             authorLink.href = fullLink;
+//             authorLink.target = "_blank";
 //             if (authorName !== "") {
-//               newLink.textContent = `${authorName}`;
+//               authorLink.textContent = `${authorName}`;
 //             } else {
-//               newLink.textContent = `${username}`;
+//               authorLink.textContent = `${username}`;
 //             }
 //             console.log("author name:", authorName, data);
 //           })
@@ -222,35 +222,51 @@ async function createURL() {
         URLlist.push(randomIndex); // track which images have been added
         console.log(URLlist);
 
-        let newFig = document.createElement("figure");
-        let newCaption = document.createElement("figcaption");
-        let newLink = document.createElement("a");
-        let newImg = document.createElement("img");
-        let flickrLink = document.createElement("a");
-        flickrLink.href = imageJPG;
-        newFig.appendChild(newImg);
-        // newFig.appendChild(flickrLink).appendChild(newImg);
-        newFig.appendChild(newCaption);
-        newCaption.appendChild(newLink);
-        newImg.src = imageJPG;
-        gallery.appendChild(newFig);
+        // let newFig = document.createElement("figure");
+        // let newCaption = document.createElement("figcaption");
+        // let authorLink = document.createElement("a");
+        // let newImg = document.createElement("img");
+        // let wrapLink = document.createElement("a");
+        // wrapLink.href = imageJPG;
+        // newFig.appendChild(newImg);
+        // // newFig.appendChild(wrapLink).appendChild(newImg);
+        // newFig.appendChild(newCaption);
+        // newCaption.appendChild(authorLink);
+        // newImg.src = imageJPG;
+        // gallery.appendChild(newFig);
         let infoURL = `${baseURL}${methodGetInfo}&api_key=${api_key}${JSON}&photo_id=${photoID}`;
         fetch(infoURL)
           .then((response) => response.json())
           .then((data) => {
+            let newFig = document.createElement("figure");
+            let wrapLink = document.createElement("a");
             let fullLink = data.photo.urls.url[0]._content;
+            wrapLink.href = fullLink;
+            wrapLink.target = "_blank";
+
+            let newImg = document.createElement("img");
+            newImg.src = imageJPG;
+            let newCaption = document.createElement("figcaption");
+            let authorLink = document.createElement("a");
+
+            wrapLink.appendChild(newImg);
+            newFig.appendChild(wrapLink);
+            gallery.appendChild(newFig);
+            newFig.appendChild(newCaption);
+            newCaption.appendChild(authorLink);
+
             let authorName = data.photo.owner.realname;
             let username = data.photo.owner.username;
             let nsid = data.photo.owner.nsid;
-            newLink.href = `https://www.flickr.com/photos/${nsid}/`;
+            authorLink.href = `https://www.flickr.com/photos/${nsid}/`;
 
-            console.log(fullLink);
+            // console.log(fullLink);
 
-            newLink.target = "_blank";
+            authorLink.target = "_blank";
             if (authorName !== "") {
-              newLink.textContent = `${authorName}`;
+              authorLink.textContent = `${authorName}`;
             } else {
-              newLink.textContent = `${username}`;
+              authorLink.textContent = `${username}`;
             }
             console.log("author name:", authorName, data);
           })
@@ -262,11 +278,11 @@ async function createURL() {
 
   //     // let newFig = document.createElement("figure");
   //     // let newCaption = document.createElement("figcaption");
-  //     // let newLink = document.createElement("a");
+  //     // let authorLink = document.createElement("a");
   //     // let newImg = document.createElement("img");
   //     // newFig.appendChild(newImg);
   //     // newFig.appendChild(newCaption);
-  //     // newCaption.appendChild(newLink);
+  //     // newCaption.appendChild(authorLink);
   //     // newImg.src = imgUrl;
   //     // gallery.appendChild(newFig);
   //     // let infoURL = `${baseURL}${methodGetInfo}&api_key=${api_key}${JSON}&photo_id=${photoID}`;
@@ -277,12 +293,12 @@ async function createURL() {
   //     //     let authorName = data.photo.owner.realname;
   //     //     let username = data.photo.owner.username;
   //     //     console.log(fullLink);
-  //     //     newLink.href = fullLink;
-  //     //     newLink.target = "_blank";
+  //     //     authorLink.href = fullLink;
+  //     //     authorLink.target = "_blank";
   //     //     if (authorName !== "") {
-  //     //       newLink.textContent = `${authorName}`;
+  //     //       authorLink.textContent = `${authorName}`;
   //     //     } else {
-  //     //       newLink.textContent = `${username}`;
+  //     //       authorLink.textContent = `${username}`;
   //     //     }
   //     //     console.log("author name:", authorName, data);
   //     //   })
