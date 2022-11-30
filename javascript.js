@@ -57,6 +57,8 @@
  *    - display the relevant tags
  */
 
+const RESULTS_LENGTH = 15; // Max number of images displayed in results
+
 class Image {
   constructor(imgURL, flickrURL, title, tags) {
     this.imgURL = imgURL;
@@ -103,6 +105,70 @@ searchBtn.addEventListener("keydown", function (event) {
   }
 });
 
+// async function createURL() {
+//   //   console.log(api_key, baseURL, apiURL, searchTerm);
+//   let searchTerm = searchBox.value.trim();
+//   let cameraTerm = camera.value.trim();
+//   let filmStockTerm = filmStock.value.trim();
+//   gallery.innerHTML = "";
+//   let URLlist = [];
+//   for (let i = 0; i < 15; i++) {
+//     // let page = `page=${Math.floor(Math.random() * 3) + 1}`;
+//     let page = 1;
+//     fullURL = `${baseURL}${methodPhotoSearch}&api_key=${api_key}${JSON}&${tagURL}${searchTerm},${filmStockTerm},${cameraTerm},&${page}`;
+//     console.log(fullURL);
+//     const response = await fetch(fullURL)
+//       .then((response) => response.json())
+//       .then((data) => {
+//         let randomIndex = Math.floor(Math.random() * data.photos.photo.length);
+//         // pick a different number if this image has already been used
+//         console.log("DATA: ", data);
+//         let object = data.photos.photo[randomIndex];
+//         console.log("OBJECT: ", object);
+//         let serverID = object.server;
+//         let photoID = object.id;
+//         let secret = object.secret;
+//         let imgUrl = `https://live.staticflickr.com/${serverID}/${photoID}_${secret}.jpg`;
+//         while (URLlist.includes(imgUrl)) {
+//           randomIndex = Math.floor(Math.random() * data.photos.photo.length);
+//         }
+//         URLlist.push(randomIndex); // track which images have been added
+
+//         // console.log(imgUrl);
+//         let newFig = document.createElement("figure");
+//         let newCaption = document.createElement("figcaption");
+//         let newLink = document.createElement("a");
+
+//         let newImg = document.createElement("img");
+//         newFig.appendChild(newImg);
+//         newFig.appendChild(newCaption);
+//         newCaption.appendChild(newLink);
+//         newImg.src = imgUrl;
+//         gallery.appendChild(newFig);
+//         let infoURL = `${baseURL}${methodGetInfo}&api_key=${api_key}${JSON}&photo_id=${photoID}`;
+//         fetch(infoURL)
+//           .then((response) => response.json())
+//           .then((data) => {
+//             let fullLink = data.photo.urls.url[0]._content;
+//             let authorName = data.photo.owner.realname;
+//             let username = data.photo.owner.username;
+//             console.log(fullLink);
+//             newLink.href = fullLink;
+//             newLink.target = "_blank";
+//             if (authorName !== "") {
+//               newLink.textContent = `${authorName}`;
+//             } else {
+//               newLink.textContent = `${username}`;
+//             }
+//             console.log("author name:", authorName, data);
+//           })
+//           .catch((error) =>
+//             console.log("Error fetching and parsing data.", error)
+//           );
+//       });
+//   }
+// }
+
 async function createURL() {
   //   console.log(api_key, baseURL, apiURL, searchTerm);
   let searchTerm = searchBox.value.trim();
@@ -110,38 +176,63 @@ async function createURL() {
   let filmStockTerm = filmStock.value.trim();
   gallery.innerHTML = "";
   let URLlist = [];
-  for (let i = 0; i < 15; i++) {
-    // let page = `page=${Math.floor(Math.random() * 3) + 1}`;
-    let page = 1;
-    fullURL = `${baseURL}${methodPhotoSearch}&api_key=${api_key}${JSON}&${tagURL}${searchTerm},${filmStockTerm},${cameraTerm},&${page}`;
-    console.log(fullURL);
-    const response = await fetch(fullURL)
-      .then((response) => response.json())
-      .then((data) => {
-        let randomIndex = Math.floor(Math.random() * data.photos.photo.length);
-        // pick a different number if this image has already been used
-        console.log("DATA: ", data);
-        let object = data.photos.photo[randomIndex];
+  let page = 1;
+  fullURL = `${baseURL}${methodPhotoSearch}&api_key=${api_key}${JSON}&${tagURL}${searchTerm},${filmStockTerm},${cameraTerm},&${page}`;
+  console.log("Search URL:", fullURL);
+  let while1 = 0;
+  let while2 = 0;
+  const response = await fetch(fullURL)
+    .then((response) => response.json())
+    .then((data) => {
+      const results = data.photos;
+      console.log("SEARCH RESULTS: ", results);
+      const resultsCount = data.photos.total;
+      if (resultsCount == 0) {
+        alert(`Sorry, no results!`);
+      } else if (resultsCount < 15) {
+        alert(`Only ${resultsCount} result(s)!`);
+      }
+      console.log("# PHOTOS RETURNED: ", resultsCount);
+      const resultsPages = data.photos.pages;
+      console.log("# PAGES: ", resultsPages);
+
+      while (URLlist.length < RESULTS_LENGTH) {
+        while1++;
+        console.log("while1: ", while1);
+
+        let randomIndex =
+          Math.floor(Math.random() * data.photos.photo.length) + 1;
+        console.log("RANDOM INDEX: ", randomIndex);
+
+        let object = data.photos.photo[randomIndex - 1];
         console.log("OBJECT: ", object);
         let serverID = object.server;
         let photoID = object.id;
         let secret = object.secret;
-        let imgUrl = `https://live.staticflickr.com/${serverID}/${photoID}_${secret}.jpg`;
-        while (URLlist.includes(imgUrl)) {
-          randomIndex = Math.floor(Math.random() * data.photos.photo.length);
+        let imageJPG = `https://live.staticflickr.com/${serverID}/${photoID}_${secret}.jpg`;
+        console.log(imageJPG);
+
+        // Keep randomizing results until you get a new image. Break after 100 tries
+        while (URLlist.includes(randomIndex) && while2 > 20) {
+          while2++;
+          console.log("while2: ", while2);
+          randomIndex =
+            Math.floor(Math.random() * data.photos.photo.length) + 1;
         }
         URLlist.push(randomIndex); // track which images have been added
+        console.log(URLlist);
 
-        // console.log(imgUrl);
         let newFig = document.createElement("figure");
         let newCaption = document.createElement("figcaption");
         let newLink = document.createElement("a");
-
         let newImg = document.createElement("img");
+        let flickrLink = document.createElement("a");
+        flickrLink.href = imageJPG;
         newFig.appendChild(newImg);
+        // newFig.appendChild(flickrLink).appendChild(newImg);
         newFig.appendChild(newCaption);
         newCaption.appendChild(newLink);
-        newImg.src = imgUrl;
+        newImg.src = imageJPG;
         gallery.appendChild(newFig);
         let infoURL = `${baseURL}${methodGetInfo}&api_key=${api_key}${JSON}&photo_id=${photoID}`;
         fetch(infoURL)
@@ -150,8 +241,11 @@ async function createURL() {
             let fullLink = data.photo.urls.url[0]._content;
             let authorName = data.photo.owner.realname;
             let username = data.photo.owner.username;
+            let nsid = data.photo.owner.nsid;
+            newLink.href = `https://www.flickr.com/photos/${nsid}/`;
+
             console.log(fullLink);
-            newLink.href = fullLink;
+
             newLink.target = "_blank";
             if (authorName !== "") {
               newLink.textContent = `${authorName}`;
@@ -163,8 +257,40 @@ async function createURL() {
           .catch((error) =>
             console.log("Error fetching and parsing data.", error)
           );
-      });
-  }
+      }
+    });
+
+  //     // let newFig = document.createElement("figure");
+  //     // let newCaption = document.createElement("figcaption");
+  //     // let newLink = document.createElement("a");
+  //     // let newImg = document.createElement("img");
+  //     // newFig.appendChild(newImg);
+  //     // newFig.appendChild(newCaption);
+  //     // newCaption.appendChild(newLink);
+  //     // newImg.src = imgUrl;
+  //     // gallery.appendChild(newFig);
+  //     // let infoURL = `${baseURL}${methodGetInfo}&api_key=${api_key}${JSON}&photo_id=${photoID}`;
+  //     // fetch(infoURL)
+  //     //   .then((response) => response.json())
+  //     //   .then((data) => {
+  //     //     let fullLink = data.photo.urls.url[0]._content;
+  //     //     let authorName = data.photo.owner.realname;
+  //     //     let username = data.photo.owner.username;
+  //     //     console.log(fullLink);
+  //     //     newLink.href = fullLink;
+  //     //     newLink.target = "_blank";
+  //     //     if (authorName !== "") {
+  //     //       newLink.textContent = `${authorName}`;
+  //     //     } else {
+  //     //       newLink.textContent = `${username}`;
+  //     //     }
+  //     //     console.log("author name:", authorName, data);
+  //     //   })
+  //     //   .catch((error) =>
+  //     //     console.log("Error fetching and parsing data.", error)
+  //     //   );
+  //   });
+  // // }
 }
 
 createURL();
