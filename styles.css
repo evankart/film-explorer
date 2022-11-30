@@ -12,7 +12,6 @@
 body {
   margin: 0 auto;
   flex-direction: column;
-  background-color: #fffefc;
   width: 100vw;
   line-height: 1.75em;
   /* overflow-x: hidden; */
@@ -70,13 +69,6 @@ button {
   flex-wrap: wrap;
   flex-direction: column;
   width: 100vw;
-  background-color: #f7f7f6;
-
-  /* grid-template-rows: masonry; */
-  /* grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  grid-column-gap: 10px;
-  grid-row-gap: 10px; */
 }
 
 #gallery > figure {
