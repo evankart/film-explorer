@@ -109,7 +109,7 @@ async function createURL() {
   let cameraTerm = camera.value.trim();
   let filmStockTerm = filmStock.value.trim();
   gallery.innerHTML = "";
-  let tally = [];
+  let URLlist = [];
   for (let i = 0; i < 15; i++) {
     // let page = `page=${Math.floor(Math.random() * 3) + 1}`;
     let page = 1;
@@ -120,16 +120,18 @@ async function createURL() {
       .then((data) => {
         let randomIndex = Math.floor(Math.random() * data.photos.photo.length);
         // pick a different number if this image has already been used
-        while (tally.includes(randomIndex)) {
-          randomIndex = Math.floor(Math.random() * data.photos.photo.length);
-        }
-        tally.push(randomIndex); // track which images have been added
+        console.log("DATA: ", data);
         let object = data.photos.photo[randomIndex];
-        // console.log(data.photos);
+        console.log("OBJECT: ", object);
         let serverID = object.server;
         let photoID = object.id;
         let secret = object.secret;
         let imgUrl = `https://live.staticflickr.com/${serverID}/${photoID}_${secret}.jpg`;
+        while (URLlist.includes(imgUrl)) {
+          randomIndex = Math.floor(Math.random() * data.photos.photo.length);
+        }
+        URLlist.push(randomIndex); // track which images have been added
+
         // console.log(imgUrl);
         let newFig = document.createElement("figure");
         let newCaption = document.createElement("figcaption");
@@ -157,7 +159,10 @@ async function createURL() {
               newLink.textContent = `${username}`;
             }
             console.log("author name:", authorName, data);
-          });
+          })
+          .catch((error) =>
+            console.log("Error fetching and parsing data.", error)
+          );
       });
   }
 }
