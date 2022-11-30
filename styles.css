@@ -70,7 +70,7 @@ button {
   flex-wrap: wrap;
   flex-direction: column;
   width: 100vw;
-  background-color: #fffefc;
+  background-color: #f7f7f6;
 
   /* grid-template-rows: masonry; */
   /* grid-template-columns: repeat(5, 1fr);
@@ -80,35 +80,34 @@ button {
 }
 
 #gallery > figure {
-  width: 100%;
-  max-width: 500px;
-  margin: 20px auto 0 auto;
+  width: 100vw;
+  padding: 10px 0 0 0;
   display: flex;
   flex-direction: column;
+  margin: 0 auto;
   /* background-color: aqua; */
-  border: 5px black;
 }
 
 #gallery > figure > a {
-  height: 100%;
+  height: 90%;
+  width: 95%;
+  max-width: 600px;
   margin: 0 auto;
+  box-shadow: rgba(0, 0, 0, 0.24) 2px 2px 12px;
+  background-color: #fffefc;
+  border-radius: 3px;
 }
 
 #gallery > figure > a > img {
-  /* min-width: 300px; */
-  /* max-width: 500px;
-  max-height: 500px; */
   width: 100%;
   height: 100%;
   object-fit: contain;
-  box-shadow: rgba(84, 84, 91, 0.2) 0px 5px 10px 0px;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   background-color: #fffefc;
   padding: 2.5vw;
   padding-bottom: 0;
   box-sizing: border-box;
   border-radius: 2px;
-  border: 2px solid rgb(246, 246, 246);
+  margin: 0 auto;
 }
 
 figcaption {
