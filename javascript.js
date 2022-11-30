@@ -3,6 +3,8 @@
 
 // #TO DO: Update styling for single column on mobile and various grid sizes on larger screens
 
+// #TO DO: Object/class based mewthod of adding image results to the page
+
 /*
  * #TO DO: Create Dropdown input to select specific film stocks
  * -Dropdowns:
@@ -161,7 +163,3 @@ async function createURL() {
 }
 
 createURL();
-
-// #TO DO: Figure out how to pase JSON response
-
-// #TO DO: Once JSON response is parsed, use the owner and photo ID to get the image URL and load it into the .flickrImg div
