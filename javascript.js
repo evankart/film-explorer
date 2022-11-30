@@ -109,56 +109,55 @@ async function createURL() {
   let cameraTerm = camera.value.trim();
   let filmStockTerm = filmStock.value.trim();
   gallery.innerHTML = "";
-  let tally = [];
+  let URLlist = [];
+  // let page = `page=${Math.floor(Math.random() * 3) + 1}`;
+  let page = 1;
+  fullURL = `${baseURL}${methodPhotoSearch}&api_key=${api_key}${JSON}&${tagURL}${searchTerm},${filmStockTerm},${cameraTerm},&${page}`;
+  console.log(fullURL);
+  const response = await fetch(fullURL)
+    .then((response) => response.json())
+    .then((data) => data);
   for (let i = 0; i < 15; i++) {
-    // let page = `page=${Math.floor(Math.random() * 3) + 1}`;
-    let page = 1;
-    fullURL = `${baseURL}${methodPhotoSearch}&api_key=${api_key}${JSON}&${tagURL}${searchTerm},${filmStockTerm},${cameraTerm},&${page}`;
-    console.log(fullURL);
-    const response = await fetch(fullURL)
+    let object = data.photos.photo[randomIndex];
+    console.log("OBJECT: ", object);
+    let serverID = object.server;
+    let photoID = object.id;
+    let secret = object.secret;
+    let imgUrl = `https://live.staticflickr.com/${serverID}/${photoID}_${secret}.jpg`;
+    while (URLlist.includes(imgUrl)) {
+      randomIndex = Math.floor(Math.random() * data.photos.photo.length);
+    }
+    URLlist.push(randomIndex); // track which images have been added
+
+    // console.log(imgUrl);
+    let newFig = document.createElement("figure");
+    let newCaption = document.createElement("figcaption");
+    let newLink = document.createElement("a");
+
+    let newImg = document.createElement("img");
+    newFig.appendChild(newImg);
+    newFig.appendChild(newCaption);
+    newCaption.appendChild(newLink);
+    newImg.src = imgUrl;
+    gallery.appendChild(newFig);
+    let infoURL = `${baseURL}${methodGetInfo}&api_key=${api_key}${JSON}&photo_id=${photoID}`;
+    fetch(infoURL)
       .then((response) => response.json())
       .then((data) => {
-        let randomIndex = Math.floor(Math.random() * data.photos.photo.length);
-        // pick a different number if this image has already been used
-        while (tally.includes(randomIndex)) {
-          randomIndex = Math.floor(Math.random() * data.photos.photo.length);
+        let fullLink = data.photo.urls.url[0]._content;
+        let authorName = data.photo.owner.realname;
+        let username = data.photo.owner.username;
+        console.log(fullLink);
+        newLink.href = fullLink;
+        newLink.target = "_blank";
+        if (authorName !== "") {
+          newLink.textContent = `${authorName}`;
+        } else {
+          newLink.textContent = `${username}`;
         }
-        tally.push(randomIndex); // track which images have been added
-        let object = data.photos.photo[randomIndex];
-        // console.log(data.photos);
-        let serverID = object.server;
-        let photoID = object.id;
-        let secret = object.secret;
-        let imgUrl = `https://live.staticflickr.com/${serverID}/${photoID}_${secret}.jpg`;
-        // console.log(imgUrl);
-        let newFig = document.createElement("figure");
-        let newCaption = document.createElement("figcaption");
-        let newLink = document.createElement("a");
-
-        let newImg = document.createElement("img");
-        newFig.appendChild(newImg);
-        newFig.appendChild(newCaption);
-        newCaption.appendChild(newLink);
-        newImg.src = imgUrl;
-        gallery.appendChild(newFig);
-        let infoURL = `${baseURL}${methodGetInfo}&api_key=${api_key}${JSON}&photo_id=${photoID}`;
-        fetch(infoURL)
-          .then((response) => response.json())
-          .then((data) => {
-            let fullLink = data.photo.urls.url[0]._content;
-            let authorName = data.photo.owner.realname;
-            let username = data.photo.owner.username;
-            console.log(fullLink);
-            newLink.href = fullLink;
-            newLink.target = "_blank";
-            if (authorName !== "") {
-              newLink.textContent = `${authorName}`;
-            } else {
-              newLink.textContent = `${username}`;
-            }
-            console.log("author name:", authorName, data);
-          });
-      });
+        console.log("author name:", authorName, data);
+      })
+      .catch((error) => console.log("Error fetching and parsing data.", error));
   }
 }
 
