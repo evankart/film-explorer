@@ -12,4 +12,4 @@ Easily search through sample images taken on your favorite film stocks.
 
 Contributors names and contact info
 
-[Evan Kartheiser](https://evankartheiser.com)
+[Evan Kartheiser](https:evankart.github.io)
