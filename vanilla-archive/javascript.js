@@ -1,4 +1,5 @@
 "use strict";
+
 // #TO DO: Clean up code and annotate
 
 // #TO DO: Update styling for single column on mobile and various grid sizes on larger screens
