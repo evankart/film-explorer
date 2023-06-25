@@ -63,6 +63,12 @@ function App() {
   let searchURL = "";
   let gallery = document.getElementById("gallery");
 
+  let object;
+  let serverID;
+  let photoID: string;
+  let secret;
+  let randomIndex;
+
   const searchBtn: Element | null = document.querySelector(".searchBtn");
 
   if (searchBtn) {
@@ -121,17 +127,17 @@ function App() {
           while1++;
           // console.log("while1: ", while1);
 
-          let randomIndex =
+          randomIndex =
             Math.floor(Math.random() * data.photos.photo.length) + 1;
           // console.log("RANDOM INDEX: ", randomIndex);
 
-          let object = data.photos.photo[randomIndex - 1];
+          object = data.photos.photo[randomIndex - 1];
           // console.log("OBJECT: ", object);
-          let serverID = object.server;
-          let photoID = object.id;
-          let secret = object.secret;
-          let imageJPG = `https://live.staticflickr.com/${serverID}/${photoID}_${secret}.jpg`;
-          // console.log(imageJPG);
+          serverID = object.server;
+          photoID = object.id.toString();
+          secret = object.secret;
+          const imageJPG = `https://live.staticflickr.com/${serverID}/${photoID}_${secret}.jpg`;
+          console.log("IMAGE_JPG", imageJPG);
 
           // Keep randomizing results until you get a new image. Break after 100 tries
           while (URLlist.includes(randomIndex.toString()) && while2 > 20) {
@@ -180,19 +186,18 @@ function App() {
                 } else {
                   authorLink.textContent = `${filmStockTerm} | ${cameraTerm} | by ${username}`;
                 }
-                // console.log("author name:", authorName, data);
               })
               .catch((error) =>
                 console.log("Error fetching and parsing data.", error)
               );
           };
           createImageBox();
+          console.log(imageJPG);
         }
       });
   }
 
-  createSearchURL();
-  getURLList();
+  search();
 
   return (
     <div className="App">
