@@ -72,19 +72,19 @@ function App() {
     createSearchURL();
     getURLList();
   }
+
+  let searchTerm = "";
+  let cameraTerm = "";
+  let filmStockTerm = "";
+
   function createSearchURL() {
     // console.log(api_key, baseURL, apiURL, searchTerm);
-    let searchTerm;
     if (searchBox) {
       searchTerm = (searchBox as HTMLInputElement).value;
     }
-    let cameraTerm;
     if (camera) {
-      // let cameraTerm
       cameraTerm = (camera as HTMLInputElement).value;
     }
-    // let filmStockTerm = filmStock.value.trim();
-    let filmStockTerm;
     if (filmStock) {
       filmStockTerm = (filmStock as HTMLInputElement).value;
     }
@@ -176,9 +176,9 @@ function App() {
 
                 authorLink.target = "_blank";
                 if (authorName !== "") {
-                  authorLink.textContent = `${authorName}`;
+                  authorLink.textContent = `${filmStockTerm} | ${cameraTerm} | by ${authorName}`;
                 } else {
-                  authorLink.textContent = `${username}`;
+                  authorLink.textContent = `${filmStockTerm} | ${cameraTerm} | by ${username}`;
                 }
                 // console.log("author name:", authorName, data);
               })
@@ -196,10 +196,8 @@ function App() {
 
   return (
     <div className="App">
-      <Gallery />
-
       <Search />
-      <div id="gallery"></div>
+      <Gallery />
     </div>
   );
 }

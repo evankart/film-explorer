@@ -105,6 +105,7 @@ button {
 figcaption {
   margin: 5px 1vw 5px auto;
   line-height: 1em;
+  text-align: center;
 }
 
 figcaption a {
