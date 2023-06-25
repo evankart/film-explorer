@@ -1,4 +1,7 @@
+import { KeyboardEvent } from "react";
 import "./App.css";
+import Search from "./components/Search";
+import Gallery from "./components/Gallery";
 
 function App() {
   // API Explorer: https://www.flickr.com/services/api/explore/flickr.photos.search
@@ -44,28 +47,6 @@ function App() {
 
   const RESULTS_LENGTH = 15; // Max number of images displayed in results
 
-  // class Image {
-  //   constructor(
-  //     imgURL: string,
-  //     flickrURL: string,
-  //     title: string,
-  //     tags: string
-  //   ) {
-  //     this.imgURL = imgURL;
-  //     this.flickrURL = flickrURL;
-  //     this.title = title;
-  //     this.tags = tags;
-  //   }
-  // }
-
-  const img1 = new Image();
-  // "https://live.staticflickr.com/7372/12502775644_acfd415fa7_w.jpg",
-  // "https://flickr.com/",
-  // "Sample Image",
-  // "Sample Tags"
-
-  console.log("img1", img1);
-
   const api_key = "e094e7d812d749a0545718fa9e86b735";
   const baseURL = "https://www.flickr.com/services/rest/?method=";
   const methodPhotoSearch = "flickr.photos.search";
@@ -79,43 +60,49 @@ function App() {
   const focalLength = document.getElementById("focalLength");
   const flickrImg = document.getElementById("flickrImg");
 
-  let fullURL;
+  let searchURL = "";
   let gallery = document.getElementById("gallery");
 
   const searchBtn: Element | null = document.querySelector(".searchBtn");
 
   if (searchBtn) {
-    searchBtn.addEventListener("click", createURL);
-
-    searchBtn.addEventListener("keydown", function (event) {
-      // if (event.keyCode === 13) {
-      //   searchBtn.click();
-      // }
-    });
+    searchBtn.addEventListener("click", search);
   }
-
-  async function createURL() {
-    //   console.log(api_key, baseURL, apiURL, searchTerm);
+  function search() {
+    createSearchURL();
+    getURLList();
+  }
+  function createSearchURL() {
+    // console.log(api_key, baseURL, apiURL, searchTerm);
     let searchTerm;
     if (searchBox) {
-      // let searchTerm: string = searchBox.value.trim();
+      searchTerm = (searchBox as HTMLInputElement).value;
     }
     let cameraTerm;
     if (camera) {
-      // let cameraTerm = camera.value.trim();
+      // let cameraTerm
+      cameraTerm = (camera as HTMLInputElement).value;
     }
-    let filmStockTerm;
     // let filmStockTerm = filmStock.value.trim();
+    let filmStockTerm;
+    if (filmStock) {
+      filmStockTerm = (filmStock as HTMLInputElement).value;
+    }
+
     if (gallery) {
       gallery.innerHTML = "";
     }
-    let URLlist: string[] = [];
     let page = 1;
-    fullURL = `${baseURL}${methodPhotoSearch}&api_key=${api_key}${JSON}&${tagURL}${searchTerm},${filmStockTerm},${cameraTerm},&${page}`;
-    console.log("Search URL:", fullURL);
+    searchURL = `${baseURL}${methodPhotoSearch}&api_key=${api_key}${JSON}&${tagURL}${searchTerm},${filmStockTerm},${cameraTerm},&${page}`;
+    console.log("Search URL:", searchURL);
+  }
+
+  async function getURLList() {
+    let URLlist: string[] = [];
     let while1 = 0;
     let while2 = 0;
-    const response = await fetch(fullURL)
+
+    await fetch(searchURL)
       .then((response) => response.json())
       .then((data) => {
         const results = data.photos;
@@ -132,125 +119,86 @@ function App() {
 
         while (URLlist.length < RESULTS_LENGTH) {
           while1++;
-          console.log("while1: ", while1);
+          // console.log("while1: ", while1);
 
           let randomIndex =
             Math.floor(Math.random() * data.photos.photo.length) + 1;
-          console.log("RANDOM INDEX: ", randomIndex);
+          // console.log("RANDOM INDEX: ", randomIndex);
 
           let object = data.photos.photo[randomIndex - 1];
-          console.log("OBJECT: ", object);
+          // console.log("OBJECT: ", object);
           let serverID = object.server;
           let photoID = object.id;
           let secret = object.secret;
           let imageJPG = `https://live.staticflickr.com/${serverID}/${photoID}_${secret}.jpg`;
-          console.log(imageJPG);
+          // console.log(imageJPG);
 
           // Keep randomizing results until you get a new image. Break after 100 tries
           while (URLlist.includes(randomIndex.toString()) && while2 > 20) {
             while2++;
-            console.log("while2: ", while2);
+            // console.log("while2: ", while2);
             randomIndex =
               Math.floor(Math.random() * data.photos.photo.length) + 1;
           }
           URLlist.push(randomIndex.toString()); // track which images have been added
-          console.log(URLlist);
+          // console.log(URLlist);
 
-          let infoURL = `${baseURL}${methodGetInfo}&api_key=${api_key}${JSON}&photo_id=${photoID}`;
-          fetch(infoURL)
-            .then((response) => response.json())
-            .then((data) => {
-              let newFig = document.createElement("figure");
-              let wrapLink = document.createElement("a");
-              let fullLink = data.photo.urls.url[0]._content;
-              wrapLink.href = fullLink;
-              wrapLink.target = "_blank";
+          const createImageBox = function createImageBox() {
+            let infoURL = `${baseURL}${methodGetInfo}&api_key=${api_key}${JSON}&photo_id=${photoID}`;
+            fetch(infoURL)
+              .then((response) => response.json())
+              .then((data) => {
+                let flickrLink = data.photo.urls.url[0]._content;
+                // console.log("flickr link: ", flickrLink);
 
-              let newImg = document.createElement("img");
-              newImg.src = imageJPG;
-              let newCaption = document.createElement("figcaption");
-              let authorLink = document.createElement("a");
+                let newFig = document.createElement("figure");
+                let wrapLink = document.createElement("a");
+                wrapLink.href = flickrLink;
+                wrapLink.target = "_blank";
 
-              wrapLink.appendChild(newImg);
-              newFig.appendChild(wrapLink);
-              if (gallery) {
-                gallery.appendChild(newFig);
-              }
-              newFig.appendChild(newCaption);
-              newCaption.appendChild(authorLink);
+                let newImg = document.createElement("img");
+                newImg.src = imageJPG;
+                let newCaption = document.createElement("figcaption");
+                let authorLink = document.createElement("a");
 
-              let authorName = data.photo.owner.realname;
-              let username = data.photo.owner.username;
-              let nsid = data.photo.owner.nsid;
-              authorLink.href = `https://www.flickr.com/photos/${nsid}/`;
+                wrapLink.appendChild(newImg);
+                newFig.appendChild(wrapLink);
+                if (gallery) {
+                  gallery.appendChild(newFig);
+                }
+                newFig.appendChild(newCaption);
+                newCaption.appendChild(authorLink);
 
-              authorLink.target = "_blank";
-              if (authorName !== "") {
-                authorLink.textContent = `${authorName}`;
-              } else {
-                authorLink.textContent = `${username}`;
-              }
-              console.log("author name:", authorName, data);
-            })
-            .catch((error) =>
-              console.log("Error fetching and parsing data.", error)
-            );
+                let authorName = data.photo.owner.realname;
+                let username = data.photo.owner.username;
+                let nsid = data.photo.owner.nsid;
+                authorLink.href = `https://www.flickr.com/photos/${nsid}/`;
+
+                authorLink.target = "_blank";
+                if (authorName !== "") {
+                  authorLink.textContent = `${authorName}`;
+                } else {
+                  authorLink.textContent = `${username}`;
+                }
+                // console.log("author name:", authorName, data);
+              })
+              .catch((error) =>
+                console.log("Error fetching and parsing data.", error)
+              );
+          };
+          createImageBox();
         }
       });
   }
 
-  createURL();
+  createSearchURL();
+  getURLList();
 
   return (
     <div className="App">
-      <div id="search">
-        <label htmlFor="filmStock">Film Stock:</label>
-        <select name="filmStock" id="filmStock">
-          <option value="Portra400" disabled selected hidden>
-            Portra 400
-          </option>
-          <option value="">N/A</option>
-          <optgroup label="Color Film"></optgroup>
-          <option value="Portra400">Portra 400</option>
-          <option value="KodakGold">Kodak Gold</option>
-          <option value="ColorPlus">Color Plus</option>
-          <option value="Ektar">Ektar</option>
-          <option value="Cinestill800T">Cinestill 800T</option>
-          <option value="FujiSuperia">Fuji Superia</option>
-          <optgroup label="Black and White Film"></optgroup>
-          <option value="IlfordHP5">Ilford HP5</option>
-          <option value="IlfordDelta">Ilford Delta</option>
-          <option value="IlfordXP2">Ilford XP2</option>
-          <option value="TMax400">T-Max 400</option>
-          <option value="TriXPan">Tri-X Pan 400</option>
-          <option value="Acros100">Acros 100</option>
-          <option value="Fomapan100">Fomapan 100</option>
-        </select>
+      <Gallery />
 
-        <br />
-
-        <label htmlFor="camera">Camera:</label>
-        <select name="camera" id="camera">
-          <option value="" disabled selected hidden>
-            N/A
-          </option>
-          <option value="">N/A</option>
-          <option value="canonA-1">Canon A-1</option>
-          <option value="OlympusStylus">Olympus Stylus</option>
-          <option value="MamiyaRZ67">Mamiya RZ67</option>
-          <option value="Polaroid">Polaroid</option>
-          <option value="Holga120">Holga</option>
-        </select>
-
-        <br />
-
-        <label htmlFor="searchBox">Keywords:</label>
-        <input type="text" id="searchBox" placeholder="e.g. 'cats'" />
-
-        <br />
-
-        <button className="searchBtn">Search</button>
-      </div>
+      <Search />
       <div id="gallery"></div>
     </div>
   );
