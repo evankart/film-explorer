@@ -1,3 +1,7 @@
-export default function Gallery() {
-  return <div id="gallery">Gallery</div>;
+interface GalleryProps {
+  test: string;
+}
+
+export default function Gallery(props: GalleryProps) {
+  return <div id="gallery">{props.test}</div>;
 }
