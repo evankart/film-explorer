@@ -6,7 +6,7 @@
 * {
   font-family: "Montserrat", sans-serif;
   font-size: 18px;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
 }
 
 body {
@@ -18,11 +18,6 @@ body {
 }
 
 #search {
-  width: 90%;
-  max-width: 300px;
-  padding: 0 3%;
-  /* max-width: 500px; */
-  margin: 5px auto;
   align-items: center;
   justify-content: center;
   justify-items: center;
@@ -41,11 +36,14 @@ input {
   padding-left: 5px;
 }
 
-input#searchBox {
-  width: 100%;
+input#searchBox,
+#camera,
+#filmStock {
+  width: 50%;
   box-sizing: border-box;
   padding-left: 8px;
   display: inline-block;
+  margin: 0;
 }
 
 button {
@@ -57,11 +55,6 @@ button {
   background-color: white;
   color: black;
   cursor: pointer;
-  position: relative;
-  margin: 0 0 5px 0;
-  left: 50%;
-  top: 20px;
-  transform: translate(-50%, -50%);
 }
 
 #gallery {
@@ -149,7 +142,6 @@ figcaption a:hover {
   #search {
     display: flex;
     flex-direction: row;
-    max-width: 1200px;
     margin-top: 20px;
     margin: 20px 20;
   }

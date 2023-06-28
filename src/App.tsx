@@ -45,20 +45,89 @@ function App() {
    *    - display the relevant tags
    */
 
+  const RESULTS_LENGTH = 15; // Max number of images displayed in results
   const api_key = "e094e7d812d749a0545718fa9e86b735";
-  const infoBaseURL = `https://www.flickr.com/services/rest/?method=flickr.photos.getinfo&api_key=${api_key}&`;
-  let photoID: string = "";
+  const infoBaseURL = `https://www.flickr.com/services/rest/?method=flickr.photos.getinfo&api_key=${api_key}&format=json&nojsoncallback=1&per_page=500&safe_search=1&sort=interestingness-desc&tag_mode=all&`;
   let imageJPG: string;
-  let filmStockTerm: string;
-  let cameraTerm: string;
-  let gallery = document.getElementById("gallery");
-  let infoURL = `${infoBaseURL}photo_id=${photoID}`;
+  let cameraTerm: string = "";
+  let filmStockTerm: string = "";
+  let gallery: HTMLElement | null = document.getElementById("gallery");
+  let serverID: string = "";
+  let secret: string = "";
+  let object: any = "";
+  let randomIndex: number;
+  let photoID = "";
+  let searchTerm = "";
+  const searchBox = document.getElementById("searchBox");
+  const filmStock = document.getElementById("filmStock");
+  const camera = document.getElementById("camera");
 
-  const createImageBox = function createImageBox() {
-    fetch(infoURL)
+  function updateSearchTerms(
+    searchVal: string,
+    filmStockVal: string,
+    cameraVal: string
+  ) {
+    if (searchBox) {
+      searchTerm = searchVal;
+      // console.log("searchTerm: ", searchTerm);
+    }
+    if (camera) {
+      cameraTerm = cameraVal;
+      // console.log("cameraTerm: ", cameraTerm);
+    }
+    if (filmStock) {
+      filmStockTerm = filmStockVal;
+      // console.log("filmStockTerm: ", filmStockTerm);
+    }
+
+    console.log("update search terms: ", searchTerm, filmStockTerm, cameraTerm);
+  }
+
+  async function getURLList(data: any) {
+    let URLlist: string[] = [];
+    let whileVal = 0;
+    console.log("URLList Data: ", data);
+    const resultsCount = data.photos.total;
+    if (resultsCount === 0) {
+      alert(`Sorry, no results!`);
+    } else if (resultsCount < 15) {
+      alert(`Only ${resultsCount} result(s)!`);
+    }
+    console.log("# PHOTOS RETURNED: ", resultsCount);
+    const resultsPages = data.photos.pages;
+    console.log("# PAGES: ", resultsPages);
+    while (URLlist.length < RESULTS_LENGTH) {
+      randomIndex = Math.floor(Math.random() * data.photos.photo.length) + 1;
+      // console.log("RANDOM INDEX: ", randomIndex);
+      object = data.photos.photo[randomIndex - 1];
+      if (object.id) {
+        photoID = object.id.toString();
+      }
+
+      // serverID = object.server;
+      // secret = object.secret;
+      // Keep randomizing results until you get a new image. Break after 100 tries
+      while (URLlist.includes(randomIndex.toString()) && whileVal > 20) {
+        whileVal++;
+        // console.log("whileVal: ", whileVal);
+        randomIndex = Math.floor(Math.random() * data.photos.photo.length) + 1;
+      }
+      URLlist.push(randomIndex.toString()); // track which images have been added
+      // console.log("URLList", URLlist);
+      createImageBox(photoID);
+    }
+  }
+
+  async function createImageBox(ID: string) {
+    let infoURL = `${infoBaseURL}photo_id=${ID}`;
+
+    // console.log("info search URL: ", infoURL);
+    await fetch(infoURL)
       .then((response) => response.json())
       .then((data) => {
+        // console.log("infoData: ", data);
         let flickrLink = data.photo.urls.url[0]._content;
+        // console.log("flickrLink: ", flickrLink);
 
         let newFig = document.createElement("figure");
         let wrapLink = document.createElement("a");
@@ -66,6 +135,12 @@ function App() {
         wrapLink.target = "_blank";
 
         let newImg = document.createElement("img");
+        serverID = data.photo.server;
+        secret = data.photo.secret;
+        photoID = data.photo.id;
+
+        imageJPG = `https://live.staticflickr.com/${serverID}/${photoID}_${secret}_w.jpg`;
+        // console.log("imageJPG: ", imageJPG);
         newImg.src = imageJPG;
         let newCaption = document.createElement("figcaption");
         let authorLink = document.createElement("a");
@@ -85,19 +160,27 @@ function App() {
 
         authorLink.target = "_blank";
         if (authorName !== "") {
-          authorLink.textContent = `${filmStockTerm} | ${cameraTerm} | by ${authorName}`;
+          authorLink.textContent = `Film Stock: ${filmStockTerm} | Camera: ${cameraTerm} | by ${authorName}`;
         } else {
           authorLink.textContent = `${filmStockTerm} | ${cameraTerm} | by ${username}`;
         }
       })
       .catch((error) => console.log("Error fetching and parsing data.", error));
-  };
-  createImageBox();
+  }
 
+  function updateCameraTerm(newValue: string) {
+    cameraTerm = newValue;
+  }
   return (
-    <div className="App">
-      <Search api_key={api_key} />
-      <div>{`infoURL: ${infoURL}`}</div>
+    <div className="App" style={{ width: "100vw", overflowX: "hidden" }}>
+      <Search
+        api_key={api_key}
+        gallery={gallery}
+        updateCameraTerm={updateCameraTerm}
+        createImageBox={createImageBox}
+        getURLList={getURLList}
+        updateSearchTerms={updateSearchTerms}
+      />
       <Gallery test={api_key} />
     </div>
   );
