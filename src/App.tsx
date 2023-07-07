@@ -1,4 +1,3 @@
-import { KeyboardEvent } from "react";
 import "./App.css";
 import Search from "./components/Search";
 import Gallery from "./components/Gallery";
@@ -51,8 +50,7 @@ function App() {
   let imageJPG: string;
   let cameraTerm: string = "";
   let filmStockTerm: string = "";
-  let gallery: HTMLElement | null = document.getElementById("gallery");
-  console.log(gallery);
+  let gallery: HTMLElement | null;
   let serverID: string = "";
   let secret: string = "";
   let object: any = "";
@@ -68,6 +66,7 @@ function App() {
     filmStockVal: string,
     cameraVal: string
   ) {
+    // console.log("---RUN updateSearchTerms");
     if (searchBox) {
       searchTerm = searchVal;
       // console.log("searchTerm: ", searchTerm);
@@ -85,6 +84,8 @@ function App() {
   }
 
   async function getURLList(data: any) {
+    // console.log("---RUN getURLList");
+
     let URLlist: string[] = [];
     let whileVal = 0;
     console.log("URLList Data: ", data);
@@ -114,22 +115,24 @@ function App() {
         randomIndex = Math.floor(Math.random() * data.photos.photo.length) + 1;
       }
       URLlist.push(randomIndex.toString()); // track which images have been added
-      console.log("URLList", URLlist);
-      console.log("photID", photoID);
+      // console.log("URLList", URLlist);
+      // console.log("photID", photoID);
       createImageBox(photoID);
     }
   }
 
   async function createImageBox(ID: string) {
+    // console.log("---RUN createImageBox");
+
     let infoURL = `${infoBaseURL}photo_id=${ID}`;
 
-    console.log("info search URL: ", infoURL);
+    // console.log("info search URL: ", infoURL);
     await fetch(infoURL)
       .then((response) => response.json())
       .then((data) => {
-        // console.log("infoData: ", data);
+        // console.log("---FETCHED infoURL");
         let flickrLink = data.photo.urls.url[0]._content;
-        console.log("flickrLink: ", flickrLink);
+        // console.log("flickrLink: ", flickrLink);
 
         let newFig = document.createElement("figure");
         let wrapLink = document.createElement("a");
@@ -151,13 +154,14 @@ function App() {
 
         wrapLink.appendChild(newImg);
         newFig.appendChild(wrapLink);
-        if (gallery) {
+        gallery = document.getElementById("gallery");
+        if (gallery != null) {
           gallery.appendChild(newFig);
+          // console.log(gallery);
         }
+
         newFig.appendChild(newCaption);
         newCaption.appendChild(authorLink);
-
-        console.log(gallery);
 
         let authorName = data.photo.owner.realname;
         let username = data.photo.owner.username;
@@ -174,15 +178,10 @@ function App() {
       .catch((error) => console.log("Error fetching and parsing data.", error));
   }
 
-  function updateCameraTerm(newValue: string) {
-    cameraTerm = newValue;
-  }
   return (
     <div className="App" style={{ width: "100vw", overflowX: "hidden" }}>
       <Search
         api_key={api_key}
-        gallery={gallery}
-        updateCameraTerm={updateCameraTerm}
         createImageBox={createImageBox}
         getURLList={getURLList}
         updateSearchTerms={updateSearchTerms}

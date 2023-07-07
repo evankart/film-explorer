@@ -1,7 +1,6 @@
+import { useEffect } from "react";
 interface SearchProps {
   api_key: string;
-  gallery: HTMLElement | null;
-  updateCameraTerm: Function;
   createImageBox: Function;
   getURLList: Function;
   updateSearchTerms: Function;
@@ -15,6 +14,7 @@ export default function Search(props: SearchProps) {
   const searchBox = document.getElementById("searchBox");
   const filmStock = document.getElementById("filmStock");
   const camera = document.getElementById("camera");
+
   // const focalLength = document.getElementById("focalLength");
   // const flickrImg = document.getElementById("flickrImg");
 
@@ -25,39 +25,51 @@ export default function Search(props: SearchProps) {
 
   const searchBtn: Element | null = document.querySelector(".searchBtn");
 
+  useEffect(() => {
+    search();
+  }, []);
+
   if (searchBtn) {
     searchBtn.addEventListener("click", search);
   }
   function search() {
+    // console.log("---RUN search()");
+    if (camera) {
+      console.log("camera: ", camera.innerText);
+    }
+
     createSearchURL();
     console.log("searchURL: ", searchURL);
     console.log("Searching...");
   }
 
   async function createSearchURL() {
+    // console.log("---RUN createSearchURL()");
+
     // console.log(api_key, baseURL, apiURL, searchTerm);
 
     if (searchBox) {
-      searchTerm = (searchBox as HTMLInputElement).value;
-      // console.log("searchTerm: ", searchTerm);
+      searchTerm = (searchBox as HTMLInputElement).innerText;
+      console.log("searchTerm: ", searchTerm);
+    } else {
+      console.log("no search box");
     }
     if (camera) {
       cameraTerm = (camera as HTMLInputElement).value;
-      // console.log("cameraTerm: ", cameraTerm);
+      console.log("cameraTerm: ", cameraTerm);
     }
     if (filmStock) {
       filmStockTerm = (filmStock as HTMLInputElement).value;
-      // console.log("filmStockTerm: ", filmStockTerm);
+      console.log("filmStockTerm: ", filmStockTerm);
     }
 
     props.updateSearchTerms(searchTerm, filmStockTerm, cameraTerm);
 
-    if (props.gallery) {
-      // props.gallery.innerHTML = "";
-    }
     let page = 1;
     searchURL = `${photoBaseURL}tags=${searchTerm},${filmStockTerm},${cameraTerm},&${page}`;
     // console.log("searchURL: ", searchURL);
+    // console.log("---FETCH searchURL: ");
+
     await fetch(searchURL)
       .then((response) => response.json())
       .then((response) => props.getURLList(response));
