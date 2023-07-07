@@ -49,7 +49,7 @@ export default function Search(props: SearchProps) {
     // console.log(api_key, baseURL, apiURL, searchTerm);
 
     if (searchBox) {
-      searchTerm = (searchBox as HTMLInputElement).innerText;
+      searchTerm = (searchBox as HTMLInputElement).value;
       console.log("searchTerm: ", searchTerm);
     } else {
       console.log("no search box");
