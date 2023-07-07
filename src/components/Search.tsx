@@ -57,7 +57,7 @@ export default function Search(props: SearchProps) {
     }
     let page = 1;
     searchURL = `${photoBaseURL}tags=${searchTerm},${filmStockTerm},${cameraTerm},&${page}`;
-    console.log("searchURL: ", searchURL);
+    // console.log("searchURL: ", searchURL);
     await fetch(searchURL)
       .then((response) => response.json())
       .then((response) => props.getURLList(response));

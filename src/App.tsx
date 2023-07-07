@@ -100,7 +100,7 @@ function App() {
       randomIndex = Math.floor(Math.random() * data.photos.photo.length) + 1;
       // console.log("RANDOM INDEX: ", randomIndex);
       object = data.photos.photo[randomIndex - 1];
-      if (object.id) {
+      if (object) {
         photoID = object.id.toString();
       }
 
