@@ -52,6 +52,7 @@ function App() {
   let cameraTerm: string = "";
   let filmStockTerm: string = "";
   let gallery: HTMLElement | null = document.getElementById("gallery");
+  console.log(gallery);
   let serverID: string = "";
   let secret: string = "";
   let object: any = "";
@@ -113,7 +114,8 @@ function App() {
         randomIndex = Math.floor(Math.random() * data.photos.photo.length) + 1;
       }
       URLlist.push(randomIndex.toString()); // track which images have been added
-      // console.log("URLList", URLlist);
+      console.log("URLList", URLlist);
+      console.log("photID", photoID);
       createImageBox(photoID);
     }
   }
@@ -121,13 +123,13 @@ function App() {
   async function createImageBox(ID: string) {
     let infoURL = `${infoBaseURL}photo_id=${ID}`;
 
-    // console.log("info search URL: ", infoURL);
+    console.log("info search URL: ", infoURL);
     await fetch(infoURL)
       .then((response) => response.json())
       .then((data) => {
         // console.log("infoData: ", data);
         let flickrLink = data.photo.urls.url[0]._content;
-        // console.log("flickrLink: ", flickrLink);
+        console.log("flickrLink: ", flickrLink);
 
         let newFig = document.createElement("figure");
         let wrapLink = document.createElement("a");
@@ -138,12 +140,14 @@ function App() {
         serverID = data.photo.server;
         secret = data.photo.secret;
         photoID = data.photo.id;
+        // console.log(serverID, secret, photoID);
 
         imageJPG = `https://live.staticflickr.com/${serverID}/${photoID}_${secret}_w.jpg`;
         // console.log("imageJPG: ", imageJPG);
         newImg.src = imageJPG;
         let newCaption = document.createElement("figcaption");
         let authorLink = document.createElement("a");
+        // console.log(newFig);
 
         wrapLink.appendChild(newImg);
         newFig.appendChild(wrapLink);
@@ -152,6 +156,8 @@ function App() {
         }
         newFig.appendChild(newCaption);
         newCaption.appendChild(authorLink);
+
+        console.log(gallery);
 
         let authorName = data.photo.owner.realname;
         let username = data.photo.owner.username;
@@ -181,6 +187,7 @@ function App() {
         getURLList={getURLList}
         updateSearchTerms={updateSearchTerms}
       />
+
       <Gallery test={api_key} />
     </div>
   );

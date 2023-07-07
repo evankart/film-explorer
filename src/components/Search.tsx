@@ -75,8 +75,8 @@ export default function Search(props: SearchProps) {
       }}
     >
       <label htmlFor="filmStock">Film Stock:</label>
-      <select name="filmStock" id="filmStock">
-        <option value="Portra400" disabled selected hidden>
+      <select name="filmStock" id="filmStock" defaultValue={"Portra400"}>
+        <option value="Portra400" disabled hidden>
           Portra 400
         </option>
         <option value="">N/A</option>
@@ -100,8 +100,8 @@ export default function Search(props: SearchProps) {
       <br />
 
       <label htmlFor="camera">Camera:</label>
-      <select name="camera" id="camera">
-        <option value="" disabled selected hidden>
+      <select name="camera" id="camera" defaultValue={"N/A"}>
+        <option value="" disabled hidden>
           N/A
         </option>
         <option value="">N/A</option>
