@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "./App.css";
 import Search from "./components/Search";
 import Gallery from "./components/Gallery";
@@ -44,6 +45,8 @@ function App() {
    *    - display the relevant tags
    */
 
+  const [film, setFilm] = useState("");
+
   const RESULTS_LENGTH = 15; // Max number of images displayed in results
   const api_key = "e094e7d812d749a0545718fa9e86b735";
   const infoBaseURL = `https://www.flickr.com/services/rest/?method=flickr.photos.getinfo&api_key=${api_key}&format=json&nojsoncallback=1&per_page=500&safe_search=1&sort=interestingness-desc&tag_mode=all&`;
@@ -61,23 +64,30 @@ function App() {
   const filmStock = document.getElementById("filmStock");
   const camera = document.getElementById("camera");
 
+  function changeFilm(e: any) {
+    setFilm(e.target.value);
+    console.log("film changed: ", e.target.value);
+  }
+
   function updateSearchTerms(
     searchVal: string,
     filmStockVal: string,
     cameraVal: string
   ) {
-    // console.log("---RUN updateSearchTerms");
+    console.log("---RUN updateSearchTerms");
     if (searchBox) {
       searchTerm = searchVal;
       // console.log("searchTerm: ", searchTerm);
     }
     if (camera) {
       cameraTerm = cameraVal;
-      // console.log("cameraTerm: ", cameraTerm);
+      console.log("cameraTerm: ", cameraTerm);
     }
     if (filmStock) {
       filmStockTerm = filmStockVal;
-      // console.log("filmStockTerm: ", filmStockTerm);
+      console.log("filmStockTerm: ", filmStockTerm);
+    } else {
+      console.log("No filmStock");
     }
 
     console.log("update search terms: ", searchTerm, filmStockTerm, cameraTerm);
@@ -170,6 +180,7 @@ function App() {
 
         authorLink.target = "_blank";
         if (authorName !== "") {
+          console.log("Film Stock: " + filmStockTerm);
           authorLink.textContent = `Film Stock: ${filmStockTerm} | Camera: ${cameraTerm} | by ${authorName}`;
         } else {
           authorLink.textContent = `${filmStockTerm} | ${cameraTerm} | by ${username}`;
@@ -185,6 +196,7 @@ function App() {
         createImageBox={createImageBox}
         getURLList={getURLList}
         updateSearchTerms={updateSearchTerms}
+        changeFilm={changeFilm}
       />
 
       <Gallery test={api_key} />

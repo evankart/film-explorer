@@ -4,6 +4,7 @@ interface SearchProps {
   createImageBox: Function;
   getURLList: Function;
   updateSearchTerms: Function;
+  changeFilm: Function;
 }
 
 export default function Search(props: SearchProps) {
@@ -59,7 +60,7 @@ export default function Search(props: SearchProps) {
       console.log("cameraTerm: ", cameraTerm);
     }
     if (filmStock) {
-      filmStockTerm = (filmStock as HTMLInputElement).value;
+      filmStockTerm = (filmStock as HTMLInputElement).innerText;
       console.log("filmStockTerm: ", filmStockTerm);
     }
 
@@ -87,7 +88,12 @@ export default function Search(props: SearchProps) {
       }}
     >
       <label htmlFor="filmStock">Film Stock:</label>
-      <select name="filmStock" id="filmStock" defaultValue={"Portra400"}>
+      <select
+        name="filmStock"
+        id="filmStock"
+        defaultValue={"Portra400"}
+        onChange={props.changeFilm}
+      >
         <option value="Portra400" disabled hidden>
           Portra 400
         </option>
