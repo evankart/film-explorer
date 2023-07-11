@@ -55,12 +55,23 @@ function App() {
   let gallery: HTMLElement | null;
   let serverID: string = "";
   let secret: string = "";
-  let object: any = "";
+  let imgObject: any = "";
   let randomIndex: number;
   let photoID = "";
-  let URLlist: Array<string> = [];
-  let imageArray: Array<any> = [];
-  let testArray: Array<string> = ["test1", "test2", "test3"];
+  let URLlist: any[] = [];
+
+  interface ImageArrayState extends Array<Object> {
+    farm: number;
+    id: string;
+    isFamily: number;
+    isFriend: number;
+    ispublic: number;
+    owner: string;
+    secret: string;
+    server: string;
+    title: string;
+  }
+  const [imageArray, setImageArray] = useState<ImageArrayState>();
 
   const changeFilm = (e: React.FormEvent<HTMLInputElement>) => {
     setFilm((e.target as HTMLSelectElement).value);
@@ -107,9 +118,9 @@ function App() {
     while (URLlist.length < RESULTS_LENGTH) {
       randomIndex = Math.floor(Math.random() * data.photos.photo.length) + 1;
       // console.log("RANDOM INDEX: ", randomIndex);
-      object = data.photos.photo[randomIndex - 1];
-      if (object) {
-        photoID = object.id.toString();
+      imgObject = data.photos.photo[randomIndex - 1];
+      if (imgObject) {
+        photoID = imgObject.id.toString();
       }
 
       // Keep randomizing results until you get a new image. Break after 100 tries
@@ -117,13 +128,22 @@ function App() {
         randomIndex = Math.floor(Math.random() * data.photos.photo.length) + 1;
       }
       URLlist.push(randomIndex.toString()); // track which images have been added
-      imageArray.push(data.photos.photo[randomIndex]);
+
+      if (imageArray) {
+        imageArray.push(data.photos.photo[randomIndex]);
+      }
       console.log("imageArray:", imageArray);
       // console.log("photoID", photoID);
     }
-    imageArray.map((image) => {
-      createImageBox(image);
-    });
+    console.log(typeof imageArray);
+    if (imageArray) {
+      imageArray.forEach((image) => {
+        createImageBox(image);
+      });
+      imageArray.forEach((image) => {
+        console.log(image);
+      });
+    }
   }
 
   async function createImageBox(image: any) {
@@ -136,50 +156,50 @@ function App() {
       .then((response) => response.json())
       .then((data) => {
         console.log("infoData: ", data);
-        // let flickrLink = data.photo.urls.url[0]._content;
+        let flickrLink = data.photo.urls.url[0]._content;
 
-        // let newFig = document.createElement("figure");
-        // let wrapLink = document.createElement("a");
-        // wrapLink.href = flickrLink;
-        // wrapLink.target = "_blank";
+        let newFig = document.createElement("figure");
+        let wrapLink = document.createElement("a");
+        wrapLink.href = flickrLink;
+        wrapLink.target = "_blank";
 
-        // let newImg = document.createElement("img");
-        // serverID = data.photo.server;
-        // secret = data.photo.secret;
-        // photoID = data.photo.id;
+        let newImg = document.createElement("img");
+        serverID = data.photo.server;
+        secret = data.photo.secret;
+        photoID = data.photo.id;
 
-        // imageJPG = `https://live.staticflickr.com/${serverID}/${photoID}_${secret}_w.jpg`;
-        // newImg.src = imageJPG;
-        // let newCaption = document.createElement("figcaption");
-        // let authorLink = document.createElement("a");
+        imageJPG = `https://live.staticflickr.com/${serverID}/${photoID}_${secret}_w.jpg`;
+        newImg.src = imageJPG;
+        let newCaption = document.createElement("figcaption");
+        let authorLink = document.createElement("a");
 
-        // wrapLink.appendChild(newImg);
-        // newFig.appendChild(wrapLink);
-        // gallery = document.getElementById("gallery");
-        // if (gallery != null) {
-        //   gallery.appendChild(newFig);
-        // }
+        wrapLink.appendChild(newImg);
+        newFig.appendChild(wrapLink);
+        gallery = document.getElementById("gallery");
+        if (gallery != null) {
+          gallery.appendChild(newFig);
+        }
 
-        // newFig.appendChild(newCaption);
-        // newCaption.appendChild(authorLink);
+        newFig.appendChild(newCaption);
+        newCaption.appendChild(authorLink);
 
-        // let authorName = data.photo.owner.realname;
-        // let username = data.photo.owner.username;
-        // let nsid = data.photo.owner.nsid;
-        // authorLink.href = `https://www.flickr.com/photos/${nsid}/`;
+        let authorName = data.photo.owner.realname;
+        let username = data.photo.owner.username;
+        let nsid = data.photo.owner.nsid;
+        authorLink.href = `https://www.flickr.com/photos/${nsid}/`;
 
-        // authorLink.target = "_blank";
-        // let authorText;
-        // if (authorName !== "") {
-        //   authorText = authorName;
-        // } else {
-        //   authorText = username;
-        // }
+        authorLink.target = "_blank";
+        let authorText;
+        if (authorName !== "") {
+          authorText = authorName;
+        } else {
+          authorText = username;
+        }
 
-        // authorLink.textContent = `Film Stock: ${film} | Camera: ${cameraStr} | by ${authorText}`;
+        authorLink.textContent = `Film Stock: ${film} | Camera: ${cameraStr} | by ${authorText}`;
       })
       .catch((error) => console.log("Error fetching and parsing data.", error));
-    console.log("imageArray2:", imageArray[0].id);
+    console.log("last", imageArray);
   }
 
   return (
@@ -197,12 +217,10 @@ function App() {
       />
 
       <ul>
-        {testArray.map((i) => {
-          return <li>{i}</li>;
-        })}
-        {imageArray.map((i) => {
-          return <li>{i}</li>;
-        })}
+        {/* {imageArray ? imageArray.map((image) => {
+              return <li>{image.id}</li>;
+            })
+          : return <div></div>} */}
       </ul>
     </div>
   );
