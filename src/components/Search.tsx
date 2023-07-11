@@ -20,44 +20,42 @@ export default function Search(props: SearchProps) {
   // const focalLength = document.getElementById("focalLength");
   // const flickrImg = document.getElementById("flickrImg");
 
-  const [searchURL, setSearchURL] = useState(`${photoBaseURL}tags=,&${page}`);
+  const [searchURL, setSearchURL] = useState(
+    `${photoBaseURL}tags=Portra400,&${page}`
+  );
 
   useEffect(() => {
     search();
   }, []);
 
-  async function search() {
-    // console.log("---RUN search()");
-    // console.log(api_key, baseURL, apiURL, searchTerm);
+  useEffect(() => {
+    updateSearchURL();
+  }, [props.keywords, props.film, props.cameraStr]);
 
-    // searchURL = `${photoBaseURL}tags=${props.keywords},${props.film.replace(
-    //   /\s/g,
-    //   ""
-    // )},${props.cameraStr.replace(/\s/g, "")},&${page}`;
-
+  const updateSearchURL = () => {
     setSearchURL(
       `${photoBaseURL}tags=${props.keywords},${props.film.replace(
         /\s/g,
         ""
       )},${props.cameraStr.replace(/\s/g, "")},&${page}`
     );
+  };
 
-    console.log("searchURL: ", searchURL);
+  async function search() {
+    updateSearchURL();
 
-    // console.log("---FETCH searchURL: ");
+    console.log("Searching...", searchURL);
 
     await fetch(searchURL)
       .then((response) => response.json())
       .then((response) => props.getURLList(response));
-    console.log("searchURL: ", searchURL);
-    console.log("Searching...");
   }
 
   return (
     <div
       id="search"
       style={{
-        backgroundColor: "skyblue",
+        backgroundColor: "none",
         margin: "0",
         padding: "15px 0 15px 0",
         display: "flex",
