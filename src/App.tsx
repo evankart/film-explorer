@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import Search from "./components/Search";
 import Gallery from "./components/Gallery";
@@ -45,7 +45,9 @@ function App() {
    *    - display the relevant tags
    */
 
-  const [film, setFilm] = useState("");
+  const [film, setFilm] = useState("Portra 400");
+  const [cameraStr, setCameraStr] = useState("");
+  const [keywords, setKeywords] = useState("");
 
   const RESULTS_LENGTH = 15; // Max number of images displayed in results
   const api_key = "e094e7d812d749a0545718fa9e86b735";
@@ -64,34 +66,29 @@ function App() {
   const filmStock = document.getElementById("filmStock");
   const camera = document.getElementById("camera");
 
-  function changeFilm(e: any) {
-    setFilm(e.target.value);
-    console.log("film changed: ", e.target.value);
-  }
+  const changeFilm = (e: React.FormEvent<HTMLInputElement>) => {
+    setFilm((e.target as HTMLSelectElement).value);
+  };
 
-  function updateSearchTerms(
-    searchVal: string,
-    filmStockVal: string,
-    cameraVal: string
-  ) {
-    console.log("---RUN updateSearchTerms");
-    if (searchBox) {
-      searchTerm = searchVal;
-      // console.log("searchTerm: ", searchTerm);
-    }
-    if (camera) {
-      cameraTerm = cameraVal;
-      console.log("cameraTerm: ", cameraTerm);
-    }
-    if (filmStock) {
-      filmStockTerm = filmStockVal;
-      console.log("filmStockTerm: ", filmStockTerm);
-    } else {
-      console.log("No filmStock");
-    }
+  const changeCamera = (e: React.FormEvent<HTMLInputElement>) => {
+    setCameraStr((e.target as HTMLSelectElement).value);
+  };
 
-    console.log("update search terms: ", searchTerm, filmStockTerm, cameraTerm);
-  }
+  const changeKeywords = (e: React.FormEvent<HTMLInputElement>) => {
+    setKeywords((e.target as HTMLInputElement).value);
+  };
+
+  useEffect(() => {
+    console.log("film changed: ", film);
+  }, [film]);
+
+  useEffect(() => {
+    console.log("camera changed: ", cameraStr);
+  }, [cameraStr]);
+
+  useEffect(() => {
+    console.log("keywords changed: ", keywords);
+  }, [keywords]);
 
   async function getURLList(data: any) {
     // console.log("---RUN getURLList");
@@ -179,12 +176,14 @@ function App() {
         authorLink.href = `https://www.flickr.com/photos/${nsid}/`;
 
         authorLink.target = "_blank";
+        let authorText;
         if (authorName !== "") {
-          console.log("Film Stock: " + filmStockTerm);
-          authorLink.textContent = `Film Stock: ${filmStockTerm} | Camera: ${cameraTerm} | by ${authorName}`;
+          authorText = authorName;
         } else {
-          authorLink.textContent = `${filmStockTerm} | ${cameraTerm} | by ${username}`;
+          authorText = username;
         }
+
+        authorLink.textContent = `Film Stock: ${film} | Camera: ${cameraStr} | by ${authorText}`;
       })
       .catch((error) => console.log("Error fetching and parsing data.", error));
   }
@@ -195,8 +194,12 @@ function App() {
         api_key={api_key}
         createImageBox={createImageBox}
         getURLList={getURLList}
-        updateSearchTerms={updateSearchTerms}
         changeFilm={changeFilm}
+        changeCamera={changeCamera}
+        changeKeywords={changeKeywords}
+        cameraStr={cameraStr}
+        film={film}
+        keywords={keywords}
       />
 
       <Gallery test={api_key} />
