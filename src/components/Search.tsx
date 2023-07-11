@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 interface SearchProps {
   api_key: string;
   createImageBox: Function;
@@ -14,46 +14,43 @@ interface SearchProps {
 export default function Search(props: SearchProps) {
   // `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${api_key}format=json&nojsoncallback=1&per_page=500&safe_search=1&sort=interestingness-desc&tag_mode=all&${tagURL}${searchTerm},${filmStockTerm},${cameraTerm},&${page}`;
 
+  let page = 1;
   const photoBaseURL = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${props.api_key}&format=json&nojsoncallback=1&per_page=500&safe_search=1&sort=interestingness-desc&tag_mode=all&`;
 
   // const focalLength = document.getElementById("focalLength");
   // const flickrImg = document.getElementById("flickrImg");
 
-  let searchURL = "";
-
-  const searchBtn: Element | null = document.querySelector(".searchBtn");
+  const [searchURL, setSearchURL] = useState(`${photoBaseURL}tags=,&${page}`);
 
   useEffect(() => {
     search();
   }, []);
 
-  if (searchBtn) {
-    searchBtn.addEventListener("click", search);
-  }
-  function search() {
+  async function search() {
     // console.log("---RUN search()");
-
-    createSearchURL();
-    console.log("searchURL: ", searchURL);
-    console.log("Searching...");
-  }
-
-  async function createSearchURL() {
-    // console.log("---RUN createSearchURL()");
-
     // console.log(api_key, baseURL, apiURL, searchTerm);
 
-    let page = 1;
-    searchURL = `${photoBaseURL}tags=${props.keywords},${props.film.replace(
-      /\s/g,
-      ""
-    )},${props.cameraStr.replace(/\s/g, "")},&${page}`;
+    // searchURL = `${photoBaseURL}tags=${props.keywords},${props.film.replace(
+    //   /\s/g,
+    //   ""
+    // )},${props.cameraStr.replace(/\s/g, "")},&${page}`;
+
+    setSearchURL(
+      `${photoBaseURL}tags=${props.keywords},${props.film.replace(
+        /\s/g,
+        ""
+      )},${props.cameraStr.replace(/\s/g, "")},&${page}`
+    );
+
     console.log("searchURL: ", searchURL);
+
     // console.log("---FETCH searchURL: ");
 
     await fetch(searchURL)
       .then((response) => response.json())
       .then((response) => props.getURLList(response));
+    console.log("searchURL: ", searchURL);
+    console.log("Searching...");
   }
 
   return (
