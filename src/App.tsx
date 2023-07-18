@@ -47,20 +47,29 @@ function App() {
   const [film, setFilm] = useState("Portra 400");
   const [cameraStr, setCameraStr] = useState("");
   const [keywords, setKeywords] = useState("");
+  const [imageIDArray, setImageIDArray] = useState<string[]>([]);
+  // const [imageInfoArray, setimageInfoArray] = useState<
+  //   Array<ImageObjectState>
+  // >([]);
+  const [imageInfoArray, setImageInfoArray] = useState<any>([]);
 
-  const RESULTS_LENGTH = 2; // Max number of images displayed in results
+  const RESULTS_LENGTH = 5; // Max number of images displayed in results
   const api_key = "e094e7d812d749a0545718fa9e86b735";
   const infoBaseURL = `https://www.flickr.com/services/rest/?method=flickr.photos.getinfo&api_key=${api_key}&format=json&nojsoncallback=1&per_page=500&safe_search=1&sort=interestingness-desc&tag_mode=all&`;
-  let imageJPG: string;
-  let gallery: HTMLElement | null;
+  let imageJPG: string = "";
+  let gallery: HTMLElement | null = null;
   let serverID: string = "";
   let secret: string = "";
-  let imgObject: any = "";
+  let imgObject: ImageObjectState;
   let randomIndex: number;
   let photoID = "";
   let URLlist: any[] = [];
+  let tempImgIDArray: string[] = [];
+  let tempObjectArray: any[] = [];
+  // let imageInfoArray: any[] = [];
+  console.log(`image info array init: ${imageInfoArray}`);
 
-  interface ImageArrayState extends Array<Object> {
+  interface ImageObjectState extends Object {
     farm: number;
     id: string;
     isFamily: number;
@@ -70,8 +79,8 @@ function App() {
     secret: string;
     server: string;
     title: string;
+    imgObject: Object;
   }
-  const [imageArray, setImageArray] = useState<ImageArrayState>();
 
   const changeFilm = (e: React.FormEvent<HTMLInputElement>) => {
     setFilm((e.target as HTMLSelectElement).value);
@@ -88,20 +97,24 @@ function App() {
   useEffect(() => {
     // console.log("film changed: ", film);
     setFilm(film);
-  }, [film]);
-
-  useEffect(() => {
     // console.log("camera changed: ", cameraStr);
     setCameraStr(cameraStr);
-  }, [cameraStr]);
-
-  useEffect(() => {
     // console.log("keywords changed: ", keywords);
     setKeywords(keywords);
-  }, [keywords]);
+
+    setImageInfoArray(imageInfoArray);
+  }, [film, cameraStr, keywords, imageInfoArray]);
+
+  if (gallery == null) {
+    console.log("gallery doesn't exist: ", gallery);
+    gallery = document.createElement("div");
+    gallery.setAttribute("id", "gallery");
+  } else {
+    gallery = document.getElementById("gallery");
+    console.log("gallery exists: ", gallery);
+  }
 
   async function getURLList(data: any) {
-    // console.log("---RUN getURLList");
     console.log("URLList Data: ", data);
 
     const resultsCount = data.photos.total;
@@ -122,40 +135,53 @@ function App() {
       if (imgObject) {
         photoID = imgObject.id.toString();
       }
+      console.log("imgObject: ", imgObject);
 
       // Keep randomizing results until you get a new image. Break after 100 tries
       while (URLlist.includes(randomIndex.toString())) {
         randomIndex = Math.floor(Math.random() * data.photos.photo.length) + 1;
       }
       URLlist.push(randomIndex.toString()); // track which images have been added
+      console.log("URL List: ", URLlist);
+      if (imageIDArray) {
+        // imageIDArray.push(data.photos.photo[randomIndex]);
+        // imageIDArray.push(imgObject);
 
-      if (imageArray) {
-        imageArray.push(data.photos.photo[randomIndex]);
+        tempImgIDArray = [...tempImgIDArray, photoID];
+        console.log("tempImgIDArray: ", tempImgIDArray);
+
+        setImageIDArray(tempImgIDArray);
+        console.log("imageIDArray:", imageIDArray);
       }
-      console.log("imageArray:", imageArray);
       // console.log("photoID", photoID);
     }
-    console.log(typeof imageArray);
-    if (imageArray) {
-      imageArray.forEach((image) => {
+
+    console.log("imageIDArray:", imageIDArray);
+
+    console.log(typeof imageIDArray);
+    if (imageIDArray) {
+      imageIDArray.forEach((image) => {
         createImageBox(image);
       });
-      imageArray.forEach((image) => {
+      imageIDArray.forEach((image) => {
         console.log(image);
       });
     }
   }
 
-  async function createImageBox(image: any) {
+  async function createImageBox(image: string) {
     // console.log("---RUN createImageBox");
 
-    let infoURL = `${infoBaseURL}photo_id=${image.id}`;
+    let infoURL = `${infoBaseURL}photo_id=${image}`;
 
     console.log("info search URL: ", infoURL);
     await fetch(infoURL)
       .then((response) => response.json())
       .then((data) => {
         console.log("infoData: ", data);
+        tempObjectArray = [...tempObjectArray, data.photo.urls.url[0]._content];
+        console.log("temp object array: ", tempObjectArray);
+        setImageInfoArray(tempObjectArray);
         let flickrLink = data.photo.urls.url[0]._content;
 
         let newFig = document.createElement("figure");
@@ -175,10 +201,7 @@ function App() {
 
         wrapLink.appendChild(newImg);
         newFig.appendChild(wrapLink);
-        gallery = document.getElementById("gallery");
-        if (gallery != null) {
-          gallery.appendChild(newFig);
-        }
+        (gallery as HTMLElement).appendChild(newFig);
 
         newFig.appendChild(newCaption);
         newCaption.appendChild(authorLink);
@@ -199,8 +222,15 @@ function App() {
         authorLink.textContent = `Film Stock: ${film} | Camera: ${cameraStr} | by ${authorText}`;
       })
       .catch((error) => console.log("Error fetching and parsing data.", error));
-    console.log("last", imageArray);
+    console.log("image info array: ", imageInfoArray);
+    imageInfoArray.map((image: any) => {
+      console.log(image);
+    });
   }
+
+  console.log("last", imageIDArray);
+
+  console.log(imageJPG);
 
   return (
     <div className="App" style={{ width: "100vw", overflowX: "hidden" }}>
@@ -215,13 +245,31 @@ function App() {
         film={film}
         keywords={keywords}
       />
-
       <ul>
-        {/* {imageArray ? imageArray.map((image) => {
-              return <li>{image.id}</li>;
-            })
-          : return <div></div>} */}
+        {imageInfoArray.map((image: any) => {
+          return <li>{image}</li>;
+        })}
       </ul>
+
+      <img src={imageJPG} alt="" />
+      <div id="gallery">
+        <figure>
+          <a
+            href="https://www.flickr.com/photos/dariusphoto/50994619601/"
+            target="_blank"
+          >
+            <img src="https://live.staticflickr.com/65535/50994619601_9241b4cd3f_w.jpg" />
+          </a>
+          <figcaption>
+            <a
+              href="https://www.flickr.com/photos/157470044@N07/"
+              target="_blank"
+            >
+              Film Stock: Portra 400 | Camera: | by Darius Baczynski
+            </a>
+          </figcaption>
+        </figure>
+      </div>
     </div>
   );
 }
