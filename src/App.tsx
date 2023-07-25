@@ -257,13 +257,18 @@ function App() {
           <a
             href="https://www.flickr.com/photos/dariusphoto/50994619601/"
             target="_blank"
+            rel="noreferrer"
           >
-            <img src="https://live.staticflickr.com/65535/50994619601_9241b4cd3f_w.jpg" />
+            <img
+              src="https://live.staticflickr.com/65535/50994619601_9241b4cd3f_w.jpg"
+              alt=""
+            />
           </a>
           <figcaption>
             <a
               href="https://www.flickr.com/photos/157470044@N07/"
               target="_blank"
+              rel="noreferrer"
             >
               Film Stock: Portra 400 | Camera: | by Darius Baczynski
             </a>
