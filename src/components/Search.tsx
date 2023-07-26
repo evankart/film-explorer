@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 interface SearchProps {
   api_key: string;
   createImageBox: Function;
-  getURLList: Function;
+  getSearchResults: Function;
   changeFilm: Function;
   changeCamera: Function;
   changeKeywords: Function;
@@ -48,7 +48,7 @@ export default function Search(props: SearchProps) {
 
     await fetch(searchURL)
       .then((response) => response.json())
-      .then((response) => props.getURLList(response));
+      .then((response) => props.getSearchResults(response));
   }
 
   return (
