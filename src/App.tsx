@@ -51,7 +51,7 @@ function App() {
   // const [imageInfoArray, setimageInfoArray] = useState<
   //   Array<ImageObjectState>
   // >([]);
-  // const [imageInfoArray, setImageInfoArray] = useState<any>([]);
+  const [infoArrayState, setInfoArrayState] = useState<any>([]);
   let imageInfoArray: any[] = [];
 
   const RESULTS_LENGTH = 5; // Max number of images displayed in results
@@ -101,9 +101,7 @@ function App() {
     setCameraStr(cameraStr);
     // console.log("keywords changed: ", keywords);
     setKeywords(keywords);
-
-    // setImageInfoArray(imageInfoArray);
-  }, [film, cameraStr, keywords]);
+  }, [film, cameraStr, keywords, imageInfoArray]);
 
   if (gallery == null) {
     console.log("gallery doesn't exist: ", gallery);
@@ -163,46 +161,12 @@ function App() {
         .then((response) => response.json())
         .then((data) => {
           imageInfoArray.push(data.photo);
+          setInfoArrayState(imageInfoArray);
 
           if (imageInfoArray.length === RESULTS_LENGTH - 1) {
             console.log("Image Info Array: ", imageInfoArray);
           }
-          let flickrLink = data.photo.urls.url[0]._content;
-          let newFig = document.createElement("figure");
-          let wrapLink = document.createElement("a");
-          wrapLink.href = flickrLink;
-          wrapLink.target = "_blank";
-          let newImg = document.createElement("img");
-          serverID = data.photo.server;
-          secret = data.photo.secret;
-          photoID = data.photo.id;
-
-          imageJPG = `https://live.staticflickr.com/${serverID}/${photoID}_${secret}_w.jpg`;
-          newImg.src = imageJPG;
-          let newCaption = document.createElement("figcaption");
-          let authorLink = document.createElement("a");
-
-          wrapLink.appendChild(newImg);
-          newFig.appendChild(wrapLink);
-          (gallery as HTMLElement).appendChild(newFig);
-
-          newFig.appendChild(newCaption);
-          newCaption.appendChild(authorLink);
-
-          let authorName = data.photo.owner.realname;
-          let username = data.photo.owner.username;
-          let nsid = data.photo.owner.nsid;
-          authorLink.href = `https://www.flickr.com/photos/${nsid}/`;
-
-          authorLink.target = "_blank";
-          let authorText;
-          if (authorName !== "") {
-            authorText = authorName;
-          } else {
-            authorText = username;
-          }
-
-          authorLink.textContent = `Film Stock: ${film} | Camera: ${cameraStr} | by ${authorText}`;
+          //
         })
         .catch((error) =>
           console.log("Error fetching and parsing data.", error)
@@ -225,53 +189,34 @@ function App() {
         keywords={keywords}
       />
 
-      {/* <img src={imageInfoArray[0].image.url.urls[0]._content} alt="" /> */}
-      <div id="gallery">
-        <>
-          {imageObjectArray.map((image: any) => {
-            return <p>{image.id}</p>;
-          })}
-        </>
-        <figure>
-          <a
-            href="https://www.flickr.com/photos/dariusphoto/50994619601/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <img
-              src="https://live.staticflickr.com/65535/50994619601_9241b4cd3f_w.jpg"
-              alt=""
-            />
-          </a>
-          <figcaption>
-            <a
-              href="https://www.flickr.com/photos/157470044@N07/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Film Stock: Portra 400 | Camera: | by Darius Baczynski
-            </a>
-          </figcaption>
-        </figure>
-        <figure>
-          <a
-            href="https://www.flickr.com/photos/dariusphoto/50994619601/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <img src="" alt="" />
-          </a>
-          <figcaption>
-            <a
-              href="https://www.flickr.com/photos/157470044@N07/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Film Stock: Portra 400 | Camera: | by Darius Baczynski
-            </a>
-          </figcaption>
-        </figure>
-      </div>
+      {infoArrayState.map((info: any) => {
+        return (
+          <div id="gallery">
+            <img src={info.urls.url[0]._content} alt=""></img>;
+            <figure>
+              <a
+                href={info.urls.url[0]._content}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <img
+                  src={`https://live.staticflickr.com/${info.server}/${info.id}_${info.secret}_w.jpg`}
+                  alt=""
+                />
+              </a>
+              <figcaption>
+                <a
+                  href={`https://www.flickr.com/photos/${info.owner.nsid}/`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {`Film Stock: ${film} | Camera: ${cameraStr} | by ${info.owner.realname}`}
+                </a>
+              </figcaption>
+            </figure>
+          </div>
+        );
+      })}
     </div>
   );
 }
