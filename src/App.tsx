@@ -54,33 +54,33 @@ function App() {
   const [infoArrayState, setInfoArrayState] = useState<any>([]);
   let imageInfoArray: any[] = [];
 
-  const RESULTS_LENGTH = 5; // Max number of images displayed in results
+  const RESULTS_LENGTH = 20; // Max number of images displayed in results
   const api_key = "e094e7d812d749a0545718fa9e86b735";
   const infoBaseURL = `https://www.flickr.com/services/rest/?method=flickr.photos.getinfo&api_key=${api_key}&format=json&nojsoncallback=1&per_page=500&safe_search=1&sort=interestingness-desc&tag_mode=all&`;
-  let imageJPG: string = "";
-  let gallery: HTMLElement | null = null;
-  let serverID: string = "";
-  let secret: string = "";
-  let imgObject: ImageObjectState;
+  // let imageJPG: string = "";
+  // let gallery: HTMLElement | null = null;
+  // let serverID: string = "";
+  // let secret: string = "";
+  let imgObject: any;
   let randomIndex: number;
-  let photoID = "";
+  // let photoID = "";
   let URLlist: any[] = [];
 
   // let imageInfoArray: any[] = [];
   console.log(`image info array init: ${imageInfoArray}`);
 
-  interface ImageObjectState extends Object {
-    farm: number;
-    id: string;
-    isFamily: number;
-    isFriend: number;
-    ispublic: number;
-    owner: string;
-    secret: string;
-    server: string;
-    title: string;
-    imgObject: Object;
-  }
+  // interface ImageObjectState extends Object {
+  //   farm: number;
+  //   id: string;
+  //   isFamily: number;
+  //   isFriend: number;
+  //   ispublic: number;
+  //   owner: string;
+  //   secret: string;
+  //   server: string;
+  //   title: string;
+  //   imgObject: Object;
+  // }
 
   const changeFilm = (e: React.FormEvent<HTMLInputElement>) => {
     setFilm((e.target as HTMLSelectElement).value);
@@ -94,26 +94,29 @@ function App() {
     setKeywords((e.target as HTMLInputElement).value);
   };
 
-  useEffect(() => {
+  const refreshGallery = useEffect(() => {
     // console.log("film changed: ", film);
     setFilm(film);
     // console.log("camera changed: ", cameraStr);
     setCameraStr(cameraStr);
     // console.log("keywords changed: ", keywords);
     setKeywords(keywords);
-  }, [film, cameraStr, keywords, imageInfoArray]);
+    console.log("changed info array: ", imageInfoArray);
+    setInfoArrayState(infoArrayState);
+  }, [film, cameraStr, keywords, infoArrayState]);
 
-  if (gallery == null) {
-    console.log("gallery doesn't exist: ", gallery);
-    gallery = document.createElement("div");
-    gallery.setAttribute("id", "gallery");
-  } else {
-    gallery = document.getElementById("gallery");
-    console.log("gallery exists: ", gallery);
-  }
+  // if (gallery == null) {
+  //   console.log("gallery doesn't exist: ", gallery);
+  //   gallery = document.createElement("div");
+  //   gallery.setAttribute("id", "gallery");
+  // } else {
+  //   gallery = document.getElementById("gallery");
+  //   console.log("gallery exists: ", gallery);
+  // }
 
   async function getSearchResults(data: any) {
     console.log("Search Response Data: ", data);
+    setInfoArrayState(imageInfoArray);
 
     const resultsCount = data.photos.total;
     if (resultsCount === 0) {
@@ -131,7 +134,7 @@ function App() {
       // console.log("RANDOM INDEX: ", randomIndex);
       imgObject = data.photos.photo[randomIndex - 1];
       if (imgObject) {
-        photoID = imgObject.id.toString();
+        // photoID = imgObject.id.toString();
       }
 
       // Keep randomizing results until you get a new image. Break after 100 tries
@@ -161,7 +164,7 @@ function App() {
         .then((response) => response.json())
         .then((data) => {
           imageInfoArray.push(data.photo);
-          setInfoArrayState(imageInfoArray);
+          setInfoArrayState([...imageInfoArray]);
 
           if (imageInfoArray.length === RESULTS_LENGTH - 1) {
             console.log("Image Info Array: ", imageInfoArray);
