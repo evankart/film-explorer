@@ -18,56 +18,27 @@ function App() {
    */
 
   /*
-   * # Example
+   * # Example info URL: https://live.staticflickr.com/7372/12502775644_acfd415fa7_w.jpg
    * #   server-id: 7372
    * #   photo-id: 12502775644
    * #   secret: acfd415fa7
    * #   size: w
-   * #
-   */
-
-  // https://live.staticflickr.com/7372/12502775644_acfd415fa7_w.jpg
-
-  /**
-   * Get a list of images from search
-   * Pick images at random to include in gallery (check for duplicates)
-   * For each image selected:
-   *    - Create a new object with the Image class
-   *    - Get URL for static image
-   *    - Get URL for full flickr site
-   *    - Get image title and creator
-   *    - ADD TO GALLERY ARRAY
-   * Loop through each object in array
-   *    - Place image in gallery
-   *    - hyperlink image to flickr address
-   *    - display the title and/or creator under the image
-   *    - display the relevant tags
    */
 
   const [film, setFilm] = useState("Portra 400");
   const [cameraStr, setCameraStr] = useState("");
   const [keywords, setKeywords] = useState("");
   let imageObjectArray: any[] = [];
-  // const [imageInfoArray, setimageInfoArray] = useState<
-  //   Array<ImageObjectState>
-  // >([]);
   const [infoArrayState, setInfoArrayState] = useState<any>([]);
   let imageInfoArray: any[] = [];
+  let [numResults, setNumResults] = useState(100);
 
   const RESULTS_LENGTH = 20; // Max number of images displayed in results
   const api_key = "e094e7d812d749a0545718fa9e86b735";
   const infoBaseURL = `https://www.flickr.com/services/rest/?method=flickr.photos.getinfo&api_key=${api_key}&format=json&nojsoncallback=1&per_page=500&safe_search=1&sort=interestingness-desc&tag_mode=all&`;
-  // let imageJPG: string = "";
-  // let gallery: HTMLElement | null = null;
-  // let serverID: string = "";
-  // let secret: string = "";
   let imgObject: any;
   let randomIndex: number;
-  // let photoID = "";
   let URLlist: any[] = [];
-
-  // let imageInfoArray: any[] = [];
-  console.log(`image info array init: ${imageInfoArray}`);
 
   // interface ImageObjectState extends Object {
   //   farm: number;
@@ -94,40 +65,30 @@ function App() {
     setKeywords((e.target as HTMLInputElement).value);
   };
 
-  const refreshGallery = useEffect(() => {
+  useEffect(() => {
     // console.log("film changed: ", film);
     setFilm(film);
     // console.log("camera changed: ", cameraStr);
     setCameraStr(cameraStr);
     // console.log("keywords changed: ", keywords);
     setKeywords(keywords);
-    console.log("changed info array: ", imageInfoArray);
+    console.log("changed info array: ", infoArrayState);
     setInfoArrayState(infoArrayState);
   }, [film, cameraStr, keywords, infoArrayState]);
-
-  // if (gallery == null) {
-  //   console.log("gallery doesn't exist: ", gallery);
-  //   gallery = document.createElement("div");
-  //   gallery.setAttribute("id", "gallery");
-  // } else {
-  //   gallery = document.getElementById("gallery");
-  //   console.log("gallery exists: ", gallery);
-  // }
 
   async function getSearchResults(data: any) {
     console.log("Search Response Data: ", data);
     setInfoArrayState(imageInfoArray);
-
-    const resultsCount = data.photos.total;
-    if (resultsCount === 0) {
+    let resultsSize = data.photos.total;
+    setNumResults(resultsSize);
+    if (numResults === 0) {
       alert(`Sorry, no results!`);
-    } else if (resultsCount < 15) {
-      alert(`Only ${resultsCount} result(s)!`);
+    } else if (numResults < 15) {
+      alert(`Only ${numResults} result(s)!`);
     }
-    const resultsPages = data.photos.pages;
-
-    console.log("# PHOTOS RETURNED: ", resultsCount);
-    console.log("# PAGES: ", resultsPages);
+    const numPages = data.photos.pages;
+    console.log("# PHOTOS RETURNED: ", numResults);
+    console.log("# PAGES: ", numPages);
 
     while (imageObjectArray.length < RESULTS_LENGTH) {
       randomIndex = Math.floor(Math.random() * data.photos.photo.length) + 1;
@@ -195,6 +156,7 @@ function App() {
       {infoArrayState.map((info: any) => {
         return (
           <div id="gallery">
+            <p>{`${numResults} results.`}</p>
             <img src={info.urls.url[0]._content} alt=""></img>;
             <figure>
               <a
