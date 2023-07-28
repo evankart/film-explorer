@@ -14,14 +14,6 @@ body {
   flex-direction: column;
   width: 100vw;
   line-height: 1.75em;
-  /* overflow-x: hidden; */
-}
-
-#search {
-  align-items: center;
-  justify-content: center;
-  justify-items: center;
-  line-height: 1.5em;
 }
 
 select,

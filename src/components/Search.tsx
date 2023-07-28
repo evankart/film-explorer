@@ -54,6 +54,7 @@ export default function Search(props: SearchProps) {
   return (
     <div
       id="search"
+      className="w-full items-center"
       style={{
         backgroundColor: "none",
         margin: "0",
@@ -122,9 +123,9 @@ export default function Search(props: SearchProps) {
 
       <br />
 
-      <div className="flex  justify-between">
+      <div className="flex justify-between">
         <button className="w-8 " onClick={search}>{`<`}</button>
-        <button className="searchBtn mx-2" onClick={search}>
+        <button className="searchBtn mx-2 w-24" onClick={search}>
           Search
         </button>
         <button className="w-8" onClick={search}>{`>`}</button>
