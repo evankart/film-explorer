@@ -122,9 +122,13 @@ export default function Search(props: SearchProps) {
 
       <br />
 
-      <button className="searchBtn" onClick={search}>
-        Search
-      </button>
+      <div className="flex  justify-between">
+        <button className="w-8 " onClick={search}>{`<`}</button>
+        <button className="searchBtn mx-2" onClick={search}>
+          Search
+        </button>
+        <button className="w-8" onClick={search}>{`>`}</button>
+      </div>
     </div>
   );
 }

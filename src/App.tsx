@@ -161,10 +161,7 @@ function App() {
       <div id="gallery" className=" flex flex-wrap flex-col">
         {infoArrayState.map((info: any, i: number) => {
           return (
-            <figure
-              className="mx-auto py-2 w-[90vw] shadow-[-1px_2px_10px_rgba(0,0,0,0.2)] mb-3 lg:mb-6"
-              key={i}
-            >
+            <figure className="mx-auto py-2 w-[90vw]  mb-3 lg:mb-6" key={i}>
               <a
                 href={info.urls.url[0]._content}
                 target="_blank"
@@ -172,7 +169,8 @@ function App() {
               >
                 <img
                   src={`https://live.staticflickr.com/${info.server}/${info.id}_${info.secret}_w.jpg`}
-                  alt=""
+                  alt={info.description._content}
+                  className="shadow-[-1px_2px_10px_rgba(0,0,0,0.2)]"
                 />
               </a>
               <figcaption className="text-right text-xs sm:text-base">
