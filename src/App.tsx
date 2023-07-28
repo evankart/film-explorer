@@ -31,15 +31,15 @@ function App() {
   let imageObjectArray: any[] = [];
   const [infoArrayState, setInfoArrayState] = useState<any>([]);
   let imageInfoArray: any[] = [];
-  let [numResults, setNumResults] = useState("100");
+  let [resultsAlert, setResultsAlert] = useState("");
 
-  const RESULTS_LENGTH = 20; // Max number of images displayed in results
+  const RESULTS_LENGTH = 15; // Max number of images displayed in results
   const api_key = "e094e7d812d749a0545718fa9e86b735";
   const infoBaseURL = `https://www.flickr.com/services/rest/?method=flickr.photos.getinfo&api_key=${api_key}&format=json&nojsoncallback=1&per_page=500&safe_search=1&sort=interestingness-desc&tag_mode=all&`;
   let imgObject: any;
   let randomIndex: number;
   let URLlist: any[] = [];
-  const [resultsSize, setResultsSize] = useState(0);
+  const [resultsSize, setResultsSize] = useState(100);
 
   // interface ImageObjectState extends Object {
   //   farm: number;
@@ -74,18 +74,19 @@ function App() {
     // console.log("keywords changed: ", keywords);
     setKeywords(keywords);
     setInfoArrayState(infoArrayState);
-  }, [film, cameraStr, keywords, infoArrayState]);
+    if (resultsSize === 0) {
+      setResultsAlert(`Sorry, no results!`);
+    } else if (resultsSize < 15) {
+      setResultsAlert(`Only ${resultsSize}, no results!`);
+    }
+  }, [film, cameraStr, keywords, infoArrayState, resultsSize]);
 
   async function getSearchResults(data: any) {
     console.log("JSON Response: ", data);
     setInfoArrayState(imageInfoArray);
     let newResultsSize = data.photos.total;
     setResultsSize(newResultsSize);
-    if (resultsSize === 0) {
-      setNumResults(`Sorry, no results!`);
-    } else if (resultsSize < 15) {
-      setNumResults(`Only ${resultsSize}, no results!`);
-    }
+
     // const numPages = data.photos.pages;
     // console.log("# PHOTOS RETURNED: ", resultsSize);
     // console.log("# PAGES: ", numPages);
@@ -155,9 +156,7 @@ function App() {
         film={film}
         keywords={keywords}
       />
-      <p className="text-center">{`${resultsSize.toLocaleString(
-        undefined
-      )} results.`}</p>
+      <p>{resultsAlert}</p>
       <div id="gallery" className=" flex flex-wrap flex-col">
         {infoArrayState.map((info: any, i: number) => {
           return (
@@ -192,6 +191,9 @@ function App() {
             </figure>
           );
         })}
+        <p className="text-center">{`${resultsSize.toLocaleString(
+          undefined
+        )} results.`}</p>
       </div>
     </div>
   );
