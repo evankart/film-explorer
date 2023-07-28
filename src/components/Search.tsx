@@ -26,19 +26,24 @@ export default function Search(props: SearchProps) {
 
   useEffect(() => {
     search();
+    setSearchURL("test");
   }, []);
 
   useEffect(() => {
-    updateSearchURL();
-  }, [props.keywords, props.film, props.cameraStr]);
+    let newURL = `${photoBaseURL}tags=${props.keywords},${props.film.replace(
+      /\s/g,
+      ""
+    )},${props.cameraStr.replace(/\s/g, "")},&${page}`;
+    setSearchURL(newURL);
+  }, [props.keywords, props.film, props.cameraStr, page, photoBaseURL]);
 
   const updateSearchURL = () => {
-    setSearchURL(
-      `${photoBaseURL}tags=${props.keywords},${props.film.replace(
-        /\s/g,
-        ""
-      )},${props.cameraStr.replace(/\s/g, "")},&${page}`
-    );
+    let newURL = `${photoBaseURL}tags=${props.keywords},${props.film.replace(
+      /\s/g,
+      ""
+    )},${props.cameraStr.replace(/\s/g, "")},&${page}`;
+    setSearchURL(newURL);
+    console.log(searchURL);
   };
 
   async function search() {
@@ -68,7 +73,18 @@ export default function Search(props: SearchProps) {
         name="filmStock"
         id="filmStock"
         defaultValue={"Portra400"}
-        onChange={(e) => props.changeFilm(e)}
+        onChange={(e) => {
+          props.changeFilm(e);
+          let newURL = `${photoBaseURL}tags=${
+            props.keywords
+          },${props.film.replace(/\s/g, "")},${props.cameraStr.replace(
+            /\s/g,
+            ""
+          )},&${page}`;
+          setSearchURL(newURL);
+          console.log(newURL, searchURL);
+          search();
+        }}
       >
         <option value="Portra400" disabled hidden>
           Portra 400

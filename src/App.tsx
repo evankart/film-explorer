@@ -55,7 +55,9 @@ function App() {
   // }
 
   const changeFilm = (e: React.FormEvent<HTMLInputElement>) => {
-    setFilm((e.target as HTMLSelectElement).value);
+    let newFilm = (e.target as HTMLSelectElement).value;
+    setFilm(newFilm);
+    console.log(newFilm);
   };
 
   const changeCamera = (e: React.FormEvent<HTMLInputElement>) => {
