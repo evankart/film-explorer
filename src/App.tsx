@@ -31,7 +31,7 @@ function App() {
   let imageObjectArray: any[] = [];
   const [infoArrayState, setInfoArrayState] = useState<any>([]);
   let imageInfoArray: any[] = [];
-  let [numResults, setNumResults] = useState(100);
+  let [numResults, setNumResults] = useState("100");
 
   const RESULTS_LENGTH = 20; // Max number of images displayed in results
   const api_key = "e094e7d812d749a0545718fa9e86b735";
@@ -39,6 +39,7 @@ function App() {
   let imgObject: any;
   let randomIndex: number;
   let URLlist: any[] = [];
+  const [resultsSize, setResultsSize] = useState(0);
 
   // interface ImageObjectState extends Object {
   //   farm: number;
@@ -72,23 +73,22 @@ function App() {
     setCameraStr(cameraStr);
     // console.log("keywords changed: ", keywords);
     setKeywords(keywords);
-    console.log("changed info array: ", infoArrayState);
     setInfoArrayState(infoArrayState);
   }, [film, cameraStr, keywords, infoArrayState]);
 
   async function getSearchResults(data: any) {
-    console.log("Search Response Data: ", data);
+    console.log("JSON Response: ", data);
     setInfoArrayState(imageInfoArray);
-    let resultsSize = data.photos.total;
-    setNumResults(resultsSize);
-    if (numResults === 0) {
-      alert(`Sorry, no results!`);
-    } else if (numResults < 15) {
-      alert(`Only ${numResults} result(s)!`);
+    let newResultsSize = data.photos.total;
+    setResultsSize(newResultsSize);
+    if (resultsSize === 0) {
+      setNumResults(`Sorry, no results!`);
+    } else if (resultsSize < 15) {
+      setNumResults(`Only ${resultsSize}, no results!`);
     }
-    const numPages = data.photos.pages;
-    console.log("# PHOTOS RETURNED: ", numResults);
-    console.log("# PAGES: ", numPages);
+    // const numPages = data.photos.pages;
+    // console.log("# PHOTOS RETURNED: ", resultsSize);
+    // console.log("# PAGES: ", numPages);
 
     while (imageObjectArray.length < RESULTS_LENGTH) {
       randomIndex = Math.floor(Math.random() * data.photos.photo.length) + 1;
@@ -155,13 +155,16 @@ function App() {
         film={film}
         keywords={keywords}
       />
-      <p className="text-center">{`${numResults.toLocaleString(
+      <p className="text-center">{`${resultsSize.toLocaleString(
         undefined
       )} results.`}</p>
       <div id="gallery" className=" flex flex-wrap flex-col">
-        {infoArrayState.map((info: any) => {
+        {infoArrayState.map((info: any, i: number) => {
           return (
-            <figure className="mx-auto py-2 w-[90vw] shadow-[-1px_2px_10px_rgba(0,0,0,0.2)] mb-3 lg:mb-6">
+            <figure
+              className="mx-auto py-2 w-[90vw] shadow-[-1px_2px_10px_rgba(0,0,0,0.2)] mb-3 lg:mb-6"
+              key={i}
+            >
               <a
                 href={info.urls.url[0]._content}
                 target="_blank"
