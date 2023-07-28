@@ -140,7 +140,10 @@ function App() {
   }
 
   return (
-    <div className="App" style={{ width: "100vw", overflowX: "hidden" }}>
+    <div
+      className="App bg-[#f8f8f8]"
+      style={{ width: "100vw", overflowX: "hidden" }}
+    >
       <Search
         api_key={api_key}
         createImageBox={createImageBox}
@@ -152,13 +155,13 @@ function App() {
         film={film}
         keywords={keywords}
       />
-
-      {infoArrayState.map((info: any) => {
-        return (
-          <div id="gallery">
-            <p>{`${numResults} results.`}</p>
-            <img src={info.urls.url[0]._content} alt=""></img>;
-            <figure>
+      <p className="text-center">{`${numResults.toLocaleString(
+        undefined
+      )} results.`}</p>
+      <div id="gallery" className=" flex flex-wrap flex-col">
+        {infoArrayState.map((info: any) => {
+          return (
+            <figure className="mx-auto py-2 w-[90vw] shadow-[-1px_2px_10px_rgba(0,0,0,0.2)] mb-3 lg:mb-6">
               <a
                 href={info.urls.url[0]._content}
                 target="_blank"
@@ -169,19 +172,26 @@ function App() {
                   alt=""
                 />
               </a>
-              <figcaption>
+              <figcaption className="text-right text-xs sm:text-base">
+                {`${film ? `${film}` : ""} ${
+                  cameraStr ? `| ${cameraStr}` : ""
+                } | by `}
                 <a
                   href={`https://www.flickr.com/photos/${info.owner.nsid}/`}
                   target="_blank"
                   rel="noreferrer"
                 >
-                  {`Film Stock: ${film} | Camera: ${cameraStr} | by ${info.owner.realname}`}
+                  {`${
+                    info.owner.realname
+                      ? info.owner.realname
+                      : info.owner.username
+                  }`}
                 </a>
               </figcaption>
             </figure>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
