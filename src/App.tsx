@@ -78,7 +78,7 @@ function App() {
     // setInfoArrayState(infoArrayState);
     if (resultsSize === 0) {
       setResultsAlert(`Sorry, no results!`);
-    } else if (resultsSize < 1000) {
+    } else if (resultsSize < 15) {
       setResultsAlert(`Only ${resultsSize} results!`);
     }
     console.log(resultsSize);
