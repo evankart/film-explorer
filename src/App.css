@@ -79,11 +79,6 @@ figcaption a {
   font-size: 0.9em;
 }
 
-figcaption a:hover {
-  text-decoration: none;
-  text-shadow: 1px 1px 3px;
-}
-
 @media only screen and (min-width: 900px) {
   #gallery {
     display: grid;

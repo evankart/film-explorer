@@ -177,11 +177,12 @@ function App() {
               <figcaption className="text-right text-xs sm:text-base">
                 {`${film ? `${film}` : ""} ${
                   cameraStr ? `| ${cameraStr}` : ""
-                } | by `}
+                } | `}
                 <a
                   href={`https://www.flickr.com/photos/${info.owner.nsid}/`}
                   target="_blank"
                   rel="noreferrer"
+                  className="font-bold"
                 >
                   {`${
                     info.owner.realname
