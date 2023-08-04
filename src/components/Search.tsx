@@ -24,10 +24,11 @@ export default function Search(props: SearchProps) {
     `${photoBaseURL}tags=Portra400,&${page}`
   );
 
+  // why state doesn't update immediately (add a useEffect hook)
+  // https://blog.logrocket.com/why-react-doesnt-update-state-immediately/#:~:text=State%20updates%20in%20React%20are,components%20in%20a%20single%20pass.
   useEffect(() => {
     search();
-    setSearchURL("test");
-  }, []);
+  }, [searchURL]);
 
   useEffect(() => {
     let newURL = `${photoBaseURL}tags=${props.keywords},${props.film.replace(
@@ -75,9 +76,10 @@ export default function Search(props: SearchProps) {
         defaultValue={"Portra400"}
         onChange={(e) => {
           props.changeFilm(e);
-          let newURL = `${photoBaseURL}tags=${
-            props.keywords
-          },${props.film.replace(/\s/g, "")},${props.cameraStr.replace(
+          let newURL = `${photoBaseURL}tags=${props.keywords.replace(
+            /\s/g,
+            ""
+          )},${props.film.replace(/\s/g, "")},${props.cameraStr.replace(
             /\s/g,
             ""
           )},&${page}`;

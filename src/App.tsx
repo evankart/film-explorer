@@ -57,7 +57,8 @@ function App() {
   const changeFilm = (e: React.FormEvent<HTMLInputElement>) => {
     let newFilm = (e.target as HTMLSelectElement).value;
     setFilm(newFilm);
-    console.log(newFilm);
+    console.log("new film: ", newFilm);
+    console.log("film: ", film);
   };
 
   const changeCamera = (e: React.FormEvent<HTMLInputElement>) => {
@@ -66,22 +67,30 @@ function App() {
 
   const changeKeywords = (e: React.FormEvent<HTMLInputElement>) => {
     setKeywords((e.target as HTMLInputElement).value);
+    console.log(keywords);
   };
 
   useEffect(() => {
-    // console.log("film changed: ", film);
-    setFilm(film);
-    // console.log("camera changed: ", cameraStr);
-    setCameraStr(cameraStr);
-    // console.log("keywords changed: ", keywords);
-    setKeywords(keywords);
-    setInfoArrayState(infoArrayState);
+    console.log("film changed: ", film);
+    console.log("camera changed: ", cameraStr);
+    console.log("keywords changed: ", keywords);
+    console.log("infoArrayState changed: ", infoArrayState);
+    // setInfoArrayState(infoArrayState);
     if (resultsSize === 0) {
       setResultsAlert(`Sorry, no results!`);
-    } else if (resultsSize < 15) {
-      setResultsAlert(`Only ${resultsSize}, no results!`);
+    } else if (resultsSize < 1000) {
+      setResultsAlert(`Only ${resultsSize} results!`);
     }
-  }, [film, cameraStr, keywords, infoArrayState, resultsSize]);
+    console.log(resultsSize);
+  }, [
+    film,
+    cameraStr,
+    // keywords,
+    infoArrayState,
+    resultsSize,
+    imageObjectArray,
+    resultsAlert,
+  ]);
 
   async function getSearchResults(data: any) {
     console.log("JSON Response: ", data);
@@ -171,7 +180,7 @@ function App() {
                 <img
                   src={`https://live.staticflickr.com/${info.server}/${info.id}_${info.secret}_w.jpg`}
                   alt={info.description._content}
-                  className="shadow-[-1px_2px_10px_rgba(0,0,0,0.2)]"
+                  className="shadow-[-1px_2px_10px_rgba(0,0,0,0.2)] hover:scale-[102%] transition-all"
                 />
               </a>
               <figcaption className="text-right text-xs sm:text-base">
