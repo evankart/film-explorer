@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import "./App.css";
 import Search from "./components/Search";
 
@@ -28,6 +28,10 @@ function App() {
   const [film, setFilm] = useState("Portra 400");
   const [cameraStr, setCameraStr] = useState("");
   const [keywords, setKeywords] = useState("");
+
+  // let imageObjectArray: any[] = useMemo(() => {
+  //   return [];
+  // }, []);
   let imageObjectArray: any[] = [];
   const [infoArrayState, setInfoArrayState] = useState<any>([]);
   let imageInfoArray: any[] = [];
@@ -65,15 +69,14 @@ function App() {
     setCameraStr((e.target as HTMLSelectElement).value);
   };
 
-  const changeKeywords = (e: React.FormEvent<HTMLInputElement>) => {
-    setKeywords((e.target as HTMLInputElement).value);
+  const changeKeywords = (keywords: string) => {
+    setKeywords(keywords);
     console.log(keywords);
   };
 
   useEffect(() => {
     console.log("film changed: ", film);
     console.log("camera changed: ", cameraStr);
-    console.log("keywords changed: ", keywords);
     console.log("infoArrayState changed: ", infoArrayState);
     // setInfoArrayState(infoArrayState);
     if (resultsSize === 0) {
@@ -85,7 +88,6 @@ function App() {
   }, [
     film,
     cameraStr,
-    // keywords,
     infoArrayState,
     resultsSize,
     imageObjectArray,
@@ -168,10 +170,13 @@ function App() {
         keywords={keywords}
       />
       <p>{resultsAlert}</p>
-      <div id="gallery" className=" flex flex-wrap flex-col">
+      <div id="gallery" className=" flex flex-wrap flex-col sm:flex-row">
         {infoArrayState.map((info: any, i: number) => {
           return (
-            <figure className="mx-auto py-2 w-[90vw]  mb-3 lg:mb-6" key={i}>
+            <figure
+              className=" mx-auto py-2 w-[90vw] max-w-[500px] mb-3 lg:mb-6"
+              key={i}
+            >
               <a
                 href={info.urls.url[0]._content}
                 target="_blank"
@@ -180,13 +185,13 @@ function App() {
                 <img
                   src={`https://live.staticflickr.com/${info.server}/${info.id}_${info.secret}_w.jpg`}
                   alt={info.description._content}
-                  className="shadow-[-1px_2px_10px_rgba(0,0,0,0.2)] hover:scale-[102%] transition-all"
+                  className="aspect-[7/5] shadow-[-1px_2px_10px_rgba(0,0,0,0.2)] hover:scale-[102%] transition-all"
                 />
               </a>
               <figcaption className="text-right text-xs sm:text-base">
-                {`${film ? `${film}` : ""} ${
-                  cameraStr ? `| ${cameraStr}` : ""
-                } | `}
+                {`${film ? `${film} | ` : ""} ${
+                  cameraStr ? `${cameraStr} |` : ""
+                } `}
                 <a
                   href={`https://www.flickr.com/photos/${info.owner.nsid}/`}
                   target="_blank"

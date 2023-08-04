@@ -6,6 +6,7 @@
 * {
   font-family: "Montserrat", sans-serif;
   font-size: 18px;
+  font-weight: 300;
   /* overflow-x: hidden; */
 }
 
@@ -23,30 +24,19 @@ input {
   height: 25px;
   font-size: 1em;
   width: 100%;
-  margin-bottom: 10px;
   background-color: #fffefc;
   padding-left: 5px;
+  background-color: white;
 }
 
-input#searchBox,
-#camera,
-#filmStock {
-  width: 50%;
-  box-sizing: border-box;
-  padding-left: 8px;
-  display: inline-block;
-  margin: 0;
+label {
+  font-weight: 500;
 }
 
 button {
-  width: 100px;
-  line-height: 1.5em;
-  background-color: #fffefc;
   border-radius: 10px;
   border: 1px solid rgb(0, 0, 0);
   background-color: white;
-  color: black;
-  cursor: pointer;
 }
 
 #gallery > figure > a {
@@ -103,13 +93,6 @@ figcaption a {
 }
 
 @media only screen and (min-width: 1200px) {
-  #search {
-    display: flex;
-    flex-direction: row;
-    margin-top: 20px;
-    margin: 20px 20;
-  }
-
   select,
   input {
     width: 150px;
@@ -119,13 +102,6 @@ figcaption a {
 
   select {
     margin-right: 0;
-  }
-
-  label {
-    width: 100px;
-    min-width: 10em;
-    text-align: end;
-    margin-right: 8px;
   }
 
   button {
