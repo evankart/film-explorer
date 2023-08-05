@@ -208,10 +208,10 @@ function App() {
             </figure>
           );
         })}
-        <p className="text-center">{`${resultsSize.toLocaleString(
-          undefined
-        )} results.`}</p>
       </div>
+      <p className="text-center">{`${resultsSize.toLocaleString(
+        undefined
+      )} results.`}</p>
     </div>
   );
 }

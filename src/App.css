@@ -93,24 +93,6 @@ figcaption a {
 }
 
 @media only screen and (min-width: 1200px) {
-  select,
-  input {
-    width: 150px;
-    margin-right: 50px;
-    margin-bottom: 0;
-  }
-
-  select {
-    margin-right: 0;
-  }
-
-  button {
-    width: 600px;
-    position: relative;
-    left: 0;
-    padding: 0;
-  }
-
   #gallery > figure {
     max-width: 1000px;
   }

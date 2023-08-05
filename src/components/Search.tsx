@@ -89,10 +89,10 @@ export default function Search(props: SearchProps) {
   };
 
   return (
-    <>
+    <div>
       <div
         id="search"
-        className="w-full items-center flex flex-col sm:flex-row"
+        className="w-full  flex flex-col sm:flex-row items-center sm:justify-around sm:mb-3"
       >
         <div className="flex flex-col w-[50vw] sm:w-[30vw] ">
           <label className="mx-auto" htmlFor="filmStock">
@@ -184,16 +184,17 @@ export default function Search(props: SearchProps) {
 
         <br />
       </div>
-      <div className="flex justify-between w-[100px] mx-auto">
+      <div className="flex justify-between w-[100px] mx-auto items-center">
         <button
-          className="w-8 h-5 flex flex-col justify-center pl-2"
+          className="w-8 h-5 flex flex-col justify-center px-2 mr-2"
           onClick={search}
         >{`<`}</button>
+        <p className="flex flex-col justify-center">More</p>
         <button
-          className="w-8 h-5 flex flex-col justify-center pl-3"
+          className="w-8 h-5 flex flex-col justify-center px-2 ml-2"
           onClick={search}
         >{`>`}</button>
       </div>
-    </>
+    </div>
   );
 }
