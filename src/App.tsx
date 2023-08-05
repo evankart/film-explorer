@@ -3,60 +3,21 @@ import "./App.css";
 import Search from "./components/Search";
 
 function App() {
-  // API Explorer: https://www.flickr.com/services/api/explore/flickr.photos.search
-
-  // Example Request: https://www.flickr.com/services/rest/?method=flickr.test.echo&name=value
-
-  // https://www.flickr.com/services/rest/?method=GET&api_key=e094e7d812d749a0545718fa9e86b735&tags=portra400
-
-  // https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=e094e7d812d749a0545718fa9e86b735&tags=portra400
-
-  /*
-   * Example image URL: https://flickr.com/photos/156018067@N06/52421787156
-   * Owner: 156018067@N06
-   * Photo ID: 52421787156
-   */
-
-  /*
-   * # Example info URL: https://live.staticflickr.com/7372/12502775644_acfd415fa7_w.jpg
-   * #   server-id: 7372
-   * #   photo-id: 12502775644
-   * #   secret: acfd415fa7
-   * #   size: w
-   */
-
   const [film, setFilm] = useState("Portra 400");
   const [cameraStr, setCameraStr] = useState("");
   const [keywords, setKeywords] = useState("");
 
-  // let imageObjectArray: any[] = useMemo(() => {
-  //   return [];
-  // }, []);
   let imageObjectArray: any[] = [];
   const [infoArrayState, setInfoArrayState] = useState<any>([]);
   let imageInfoArray: any[] = [];
   let [resultsAlert, setResultsAlert] = useState("");
 
   const RESULTS_LENGTH = 15; // Max number of images displayed in results
-  const api_key = "e094e7d812d749a0545718fa9e86b735";
-  const infoBaseURL = `https://www.flickr.com/services/rest/?method=flickr.photos.getinfo&api_key=${api_key}&format=json&nojsoncallback=1&per_page=500&safe_search=1&sort=interestingness-desc&tag_mode=all&`;
+  const infoBaseURL = `https://www.flickr.com/services/rest/?method=flickr.photos.getinfo&api_key=${process.env.REACT_APP_FLICKR_API_KEY}&format=json&nojsoncallback=1&per_page=500&safe_search=1&sort=interestingness-desc&tag_mode=all&`;
   let imgObject: any;
   let randomIndex: number;
   let URLlist: any[] = [];
   const [resultsSize, setResultsSize] = useState(100);
-
-  // interface ImageObjectState extends Object {
-  //   farm: number;
-  //   id: string;
-  //   isFamily: number;
-  //   isFriend: number;
-  //   ispublic: number;
-  //   owner: string;
-  //   secret: string;
-  //   server: string;
-  //   title: string;
-  //   imgObject: Object;
-  // }
 
   const changeFilm = (e: React.FormEvent<HTMLInputElement>) => {
     let newFilm = (e.target as HTMLSelectElement).value;
@@ -75,65 +36,50 @@ function App() {
   };
 
   useEffect(() => {
-    console.log("film changed: ", film);
-    console.log("camera changed: ", cameraStr);
-    console.log("infoArrayState changed: ", infoArrayState);
+    // console.log("film changed: ", film);
+    // console.log("camera changed: ", cameraStr);
+    // console.log("infoArrayState changed: ", infoArrayState);
     // setInfoArrayState(infoArrayState);
-    if (resultsSize === 0) {
-      setResultsAlert(`Sorry, no results!`);
-    } else if (resultsSize < 15) {
-      setResultsAlert(`Only ${resultsSize} results!`);
-    }
-    console.log(resultsSize);
-  }, [
-    film,
-    cameraStr,
-    infoArrayState,
-    resultsSize,
-    imageObjectArray,
-    resultsAlert,
-  ]);
+  }, [film, cameraStr, infoArrayState]);
 
   async function getSearchResults(data: any) {
-    console.log("JSON Response: ", data);
     setInfoArrayState(imageInfoArray);
     let newResultsSize = data.photos.total;
     setResultsSize(newResultsSize);
+    if (data.photos.total != 0 && data.photos.total > 15) {
+      setResultsAlert("");
+      // console.log("JSON Response: ", data);
+      console.log("# PHOTOS RETURNED: ", resultsSize);
 
-    // const numPages = data.photos.pages;
-    // console.log("# PHOTOS RETURNED: ", resultsSize);
-    // console.log("# PAGES: ", numPages);
-
-    while (imageObjectArray.length < RESULTS_LENGTH) {
-      randomIndex = Math.floor(Math.random() * data.photos.photo.length) + 1;
-      // console.log("RANDOM INDEX: ", randomIndex);
-      imgObject = data.photos.photo[randomIndex - 1];
-      if (imgObject) {
-        // photoID = imgObject.id.toString();
-      }
-
-      // Keep randomizing results until you get a new image. Break after 100 tries
-      while (URLlist.includes(randomIndex.toString())) {
+      while (imageObjectArray.length < RESULTS_LENGTH) {
         randomIndex = Math.floor(Math.random() * data.photos.photo.length) + 1;
-      }
-      URLlist.push(randomIndex.toString()); // track which images have been added
+        imgObject = data.photos.photo[randomIndex - 1];
 
-      imageObjectArray.push(imgObject);
-      if (imageObjectArray.length === RESULTS_LENGTH) {
-        console.log("Image Object Array: ", imageObjectArray);
-        imageObjectArray.forEach((image) => {
-          createImageBox(image);
-        });
+        // Keep randomizing results until you get a new image. Break after 100 tries
+        while (URLlist.includes(randomIndex.toString())) {
+          randomIndex =
+            Math.floor(Math.random() * data.photos.photo.length) + 1;
+        }
+        URLlist.push(randomIndex.toString()); // track which images have been added
+
+        imageObjectArray.push(imgObject);
+        if (imageObjectArray.length === RESULTS_LENGTH) {
+          imageObjectArray.forEach((image) => {
+            createImageBox(image);
+          });
+        }
       }
+    } else if (data.photos.total == 0) {
+      setResultsAlert(`Sorry, no results!`);
+      setInfoArrayState([]);
+    } else if (data.photos.total <= 15) {
+      setResultsAlert(`Only ${resultsSize} results!`);
     }
   }
 
   async function createImageBox(image: any) {
-    // console.log("---RUN createImageBox");
-
     let infoURL = `${infoBaseURL}photo_id=${image.id}`;
 
-    // console.log("info search URL: ", infoURL);
     if (imageInfoArray.length < RESULTS_LENGTH - 1) {
       await fetch(infoURL)
         .then((response) => response.json())
@@ -149,7 +95,6 @@ function App() {
         .catch((error) =>
           console.log("Error fetching and parsing data.", error)
         );
-      // console.log("image info array: ", imageInfoArray);
     }
   }
 
@@ -159,7 +104,6 @@ function App() {
       style={{ width: "100vw", overflowX: "hidden" }}
     >
       <Search
-        api_key={api_key}
         createImageBox={createImageBox}
         getSearchResults={getSearchResults}
         changeFilm={changeFilm}

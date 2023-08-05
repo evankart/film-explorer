@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 interface SearchProps {
-  api_key: string;
   createImageBox: Function;
   getSearchResults: Function;
   changeFilm: Function;
@@ -11,12 +10,27 @@ interface SearchProps {
   keywords: string;
 }
 
-export default function Search(props: SearchProps) {
-  // `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${api_key}format=json&nojsoncallback=1&per_page=500&safe_search=1&sort=interestingness-desc&tag_mode=all&${tagURL}${searchTerm},${filmStockTerm},${cameraTerm},&${page}`;
+/* API INSTRUCTIONS
+* API Explorer: https://www.flickr.com/services/api/explore/flickr.photos.search
+* Example Request: https://www.flickr.com/services/rest/?method=flickr.test.echo&name=value
+* https://www.flickr.com/services/rest/?method=GET&api_key=e094e7d812d749a0545718fa9e86b735&tags=portra400
+* https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=e094e7d812d749a0545718fa9e86b735&tags=portra400
 
+* Example image URL: https://flickr.com/photos/156018067@N06/52421787156
+* Owner: 156018067@N06
+* Photo ID: 52421787156
+
+* # Example info URL: https://live.staticflickr.com/7372/12502775644_acfd415fa7_w.jpg
+* #   server-id: 7372
+* #   photo-id: 12502775644
+* #   secret: acfd415fa7
+* #   size: w
+*/
+
+export default function Search(props: SearchProps) {
   const [keywords, setKeywords] = useState("");
   let page = 1;
-  const photoBaseURL = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${props.api_key}&format=json&nojsoncallback=1&per_page=500&safe_search=1&sort=interestingness-desc&tag_mode=all&`;
+  const photoBaseURL = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${process.env.REACT_APP_FLICKR_API_KEY}&format=json&nojsoncallback=1&per_page=500&safe_search=1&sort=interestingness-desc&tag_mode=all&`;
 
   // const focalLength = document.getElementById("focalLength");
   // const flickrImg = document.getElementById("flickrImg");
@@ -60,20 +74,24 @@ export default function Search(props: SearchProps) {
     search();
   }, [searchURL]);
 
-  const updateSearchURL = () => {
-    // if (props.keywords === "" && props.film === "") {
-    //   newURL = `${photoBaseURL}tags=dogs`;
-    // } else {
-    //   newURL = `${photoBaseURL}tags=${props.keywords},${props.film.replace(
-    //     /\s/g,
-    //     ""
-    //   )},${props.cameraStr.replace(/\s/g, "")},&${page}`;
-    // }
-    // setSearchURL(newURL);
-  };
+  // const updateSearchURL = () => {
+  //   // if (props.keywords === "" && props.film === "") {
+  //   //   newURL = `${photoBaseURL}tags=dogs`;
+  //   // } else {
+  //   //   newURL = `${photoBaseURL}tags=${props.keywords},${props.film.replace(
+  //   //     /\s/g,
+  //   //     ""
+  //   //   )},${props.cameraStr.replace(/\s/g, "")},&${page}`;
+  //   // }
+  //   // setSearchURL(newURL);
+  // };
+
+  useEffect(() => {
+    console.log(keywords);
+  }, [keywords]);
 
   async function search() {
-    updateSearchURL();
+    // updateSearchURL();
 
     console.log("Searching...", searchURL);
 
@@ -84,8 +102,6 @@ export default function Search(props: SearchProps) {
 
   const handleKeywordChange = (e: React.FormEvent<HTMLInputElement>) => {
     setKeywords((e.target as HTMLInputElement).value);
-    console.log(keywords);
-    console.log(props.keywords);
   };
 
   return (
