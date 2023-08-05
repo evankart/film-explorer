@@ -5,7 +5,7 @@ interface SearchProps {
   changeFilm: Function;
   changeCamera: Function;
   changeKeywords: Function;
-  cameraStr: string;
+  camera: string;
   film: string;
   keywords: string;
 }
@@ -28,15 +28,12 @@ interface SearchProps {
 */
 
 export default function Search(props: SearchProps) {
-  const [keywords, setKeywords] = useState("");
-  let page = 1;
+  let PAGE = 1;
   const photoBaseURL = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${process.env.REACT_APP_FLICKR_API_KEY}&format=json&nojsoncallback=1&per_page=500&safe_search=1&sort=interestingness-desc&tag_mode=all&`;
 
-  // const focalLength = document.getElementById("focalLength");
-  // const flickrImg = document.getElementById("flickrImg");
-
+  const [keywords, setKeywords] = useState("");
   const [searchURL, setSearchURL] = useState(
-    `${photoBaseURL}tags=Portra400,&${page}`
+    `${photoBaseURL}tags=Portra400,&${PAGE}`
   );
 
   const handleKeyDown = (event: any) => {
@@ -49,21 +46,21 @@ export default function Search(props: SearchProps) {
 
   useEffect(() => {
     let newURL: string = "";
-
-    if (props.film === "" && props.cameraStr === "") {
+    // If both film and camera 
+    if (props.film === "" && props.camera === "") {
       newURL = `${photoBaseURL}tags=${props.keywords},35mm`;
     } else {
       newURL = `${photoBaseURL}tags=${props.keywords},${props.film.replace(
         /\s/g,
         ""
-      )},${props.cameraStr.replace(/\s/g, "")},&${page}`;
+      )},${props.camera.replace(/\s/g, "")},&${PAGE}`;
     }
     setSearchURL(newURL);
   }, [
     props.film,
-    props.cameraStr,
+    props.camera,
     props.keywords,
-    page,
+    PAGE,
     photoBaseURL,
     searchURL,
   ]);
@@ -81,7 +78,7 @@ export default function Search(props: SearchProps) {
   //   //   newURL = `${photoBaseURL}tags=${props.keywords},${props.film.replace(
   //   //     /\s/g,
   //   //     ""
-  //   //   )},${props.cameraStr.replace(/\s/g, "")},&${page}`;
+  //   //   )},${props.camera.replace(/\s/g, "")},&${page}`;
   //   // }
   //   // setSearchURL(newURL);
   // };
@@ -121,12 +118,12 @@ export default function Search(props: SearchProps) {
             defaultValue={"Portra400"}
             onChange={(e) => {
               props.changeFilm(e);
-              // if (props.film === "" && props.cameraStr === "") {
+              // if (props.film === "" && props.camera === "") {
               //   newURL = `${photoBaseURL}tags=dogs`;
               // } else {
               //   newURL = `${photoBaseURL}tags=${
               //     props.keywords
-              //   },${props.film.replace(/\s/g, "")},${props.cameraStr.replace(
+              //   },${props.film.replace(/\s/g, "")},${props.camera.replace(
               //     /\s/g,
               //     ""
               //   )},&${page}`;

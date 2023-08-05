@@ -3,21 +3,21 @@ import "./App.css";
 import Search from "./components/Search";
 
 function App() {
-  const [film, setFilm] = useState("Portra 400");
-  const [cameraStr, setCameraStr] = useState("");
-  const [keywords, setKeywords] = useState("");
+  const DEFAULT_FILM = "Portra 400";
+  const RESULTS_LENGTH = 15; // Max number of images displayed in results
+  const INFO_BASE_URL = `https://www.flickr.com/services/rest/?method=flickr.photos.getinfo&api_key=${process.env.REACT_APP_FLICKR_API_KEY}&format=json&nojsoncallback=1&per_page=500&safe_search=1&sort=interestingness-desc&tag_mode=all&`;
 
-  let imageObjectArray: any[] = [];
+  const [film, setFilm] = useState(DEFAULT_FILM);
+  const [camera, setCamera] = useState("");
+  const [keywords, setKeywords] = useState("");
+  const [resultsSize, setResultsSize] = useState(100); // init resultsSize at 100
   const [infoArrayState, setInfoArrayState] = useState<any>([]);
-  let imageInfoArray: any[] = [];
   let [resultsAlert, setResultsAlert] = useState("");
 
-  const RESULTS_LENGTH = 15; // Max number of images displayed in results
-  const infoBaseURL = `https://www.flickr.com/services/rest/?method=flickr.photos.getinfo&api_key=${process.env.REACT_APP_FLICKR_API_KEY}&format=json&nojsoncallback=1&per_page=500&safe_search=1&sort=interestingness-desc&tag_mode=all&`;
-  let imgObject: any;
+  let imageObjectArray: any[] = []; // init array of image result objects
+  let imageInfoArray: any[] = []; // init array of info for image objects
+  let imgObject: Object;
   let randomIndex: number;
-  let URLlist: any[] = [];
-  const [resultsSize, setResultsSize] = useState(100);
 
   const changeFilm = (e: React.FormEvent<HTMLInputElement>) => {
     let newFilm = (e.target as HTMLSelectElement).value;
@@ -27,7 +27,7 @@ function App() {
   };
 
   const changeCamera = (e: React.FormEvent<HTMLInputElement>) => {
-    setCameraStr((e.target as HTMLSelectElement).value);
+    setCamera((e.target as HTMLSelectElement).value);
   };
 
   const changeKeywords = (keywords: string) => {
@@ -37,10 +37,10 @@ function App() {
 
   useEffect(() => {
     // console.log("film changed: ", film);
-    // console.log("camera changed: ", cameraStr);
+    // console.log("camera changed: ", camera);
     // console.log("infoArrayState changed: ", infoArrayState);
     // setInfoArrayState(infoArrayState);
-  }, [film, cameraStr, infoArrayState]);
+  }, [film, camera, infoArrayState]);
 
   async function getSearchResults(data: any) {
     setInfoArrayState(imageInfoArray);
@@ -55,18 +55,13 @@ function App() {
         randomIndex = Math.floor(Math.random() * data.photos.photo.length) + 1;
         imgObject = data.photos.photo[randomIndex - 1];
 
-        // Keep randomizing results until you get a new image. Break after 100 tries
-        while (URLlist.includes(randomIndex.toString())) {
-          randomIndex =
-            Math.floor(Math.random() * data.photos.photo.length) + 1;
-        }
-        URLlist.push(randomIndex.toString()); // track which images have been added
-
-        imageObjectArray.push(imgObject);
-        if (imageObjectArray.length === RESULTS_LENGTH) {
-          imageObjectArray.forEach((image) => {
-            createImageBox(image);
-          });
+        if (!imageObjectArray.includes(imgObject)) {
+          imageObjectArray.push(imgObject);
+          if (imageObjectArray.length === RESULTS_LENGTH) {
+            imageObjectArray.forEach((image) => {
+              createImageBox(image);
+            });
+          }
         }
       }
     } else if (data.photos.total == 0) {
@@ -78,7 +73,7 @@ function App() {
   }
 
   async function createImageBox(image: any) {
-    let infoURL = `${infoBaseURL}photo_id=${image.id}`;
+    let infoURL = `${INFO_BASE_URL}photo_id=${image.id}`;
 
     if (imageInfoArray.length < RESULTS_LENGTH - 1) {
       await fetch(infoURL)
@@ -109,7 +104,7 @@ function App() {
         changeFilm={changeFilm}
         changeCamera={changeCamera}
         changeKeywords={changeKeywords}
-        cameraStr={cameraStr}
+        camera={camera}
         film={film}
         keywords={keywords}
       />
@@ -133,9 +128,7 @@ function App() {
                 />
               </a>
               <figcaption className="text-right text-xs sm:text-base">
-                {`${film ? `${film} | ` : ""} ${
-                  cameraStr ? `${cameraStr} |` : ""
-                } `}
+                {`${film ? `${film} | ` : ""} ${camera ? `${camera} |` : ""} `}
                 <a
                   href={`https://www.flickr.com/photos/${info.owner.nsid}/`}
                   target="_blank"
