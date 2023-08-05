@@ -124,7 +124,7 @@ function App() {
                 <img
                   src={`https://live.staticflickr.com/${info.server}/${info.id}_${info.secret}_w.jpg`}
                   alt={info.description._content}
-                  className="aspect-[7/5] shadow-[-1px_2px_10px_rgba(0,0,0,0.2)] hover:scale-[102%] transition-all"
+                  className="aspect-[7/5] shadow-[-1px_2px_10px_rgba(0,0,0,0.2)] hover:scale-[102%] transition-all w-[90vw] max-w-[500px]"
                 />
               </a>
               <figcaption className="text-right text-xs sm:text-base">
